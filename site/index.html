@@ -1,0 +1,3155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DEEN Open House RSVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>/* Layout: a black "stage" (header + live board, like the logo artwork) and white "paper" views
+   where agents work. The dashboard adds glass cards and the three performance tier colours from
+   AgentPerformanceColorTiers.pdf, regraded for Dubai (Elite gold, Core platinum, Growth bronze); everything else stays black and white. */
+:root {
+  --gold: #e3b35e;
+  --platinum: #d7dee8;
+  --bronze: #c98350;
+  --glass: rgba(255, 255, 255, .03);
+  --glass-line: rgba(255, 255, 255, .12);
+  --black: #000000;
+  --stage-2: #0f0f0f;
+  --stage-line: #262626;
+  --stage-mute: #8a8a8a;
+  --white: #ffffff;
+  --ink: #0a0a0a;
+  --mist: #f3f3f3;
+  --line: #e2e2e2;
+  --mute: #6b6b6b;
+  --maybe: #9a9a9a;
+
+  --display: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --body: "Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --radius: 4px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font: 400 15px/1.5 var(--body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.num, .big, dd, .ag-num, .mystats b { font-variant-numeric: tabular-nums; }
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter-r);
+}
+
+/* ---------- header ---------- */
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--black);
+  border-bottom: 1px solid var(--stage-line);
+}
+.top-in {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding-block: 10px;
+}
+.brand { display: flex; align-items: center; gap: 14px; color: var(--white); text-decoration: none; min-width: 0; }
+.logo { width: 92px; height: auto; display: block; flex: none; }
+.brand-tag {
+  font: 600 10px/1.2 var(--display);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--stage-mute);
+  border-left: 1px solid var(--stage-line);
+  padding-left: 14px;
+  white-space: nowrap;
+}
+.top-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.live {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 700 11px/1 var(--display); letter-spacing: .22em; text-transform: uppercase;
+}
+.live i { width: 8px; height: 8px; border-radius: 50%; background: var(--white); position: relative; }
+.live i::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 1px solid var(--white); animation: pulse 2s var(--ease) infinite;
+}
+.live.off i { background: transparent; border: 1px solid var(--stage-mute); }
+.live.off i::after { display: none; }
+.live.off { color: var(--stage-mute); }
+@keyframes pulse { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+
+.me { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.me-name { font-weight: 600; max-width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button {
+  flex: none; background: none; border: 0; color: var(--stage-mute);
+  font: 600 12px/1 var(--display); letter-spacing: .14em; text-transform: uppercase;
+  padding: 14px 12px 13px; border-bottom: 2px solid transparent;
+}
+.tabs button:hover { color: var(--white); }
+.tabs button.on { color: var(--white); border-bottom-color: var(--white); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: var(--radius);
+  background: var(--ink); color: var(--white); border: 1px solid var(--ink);
+  font: 700 12px/1 var(--display); letter-spacing: .14em; text-transform: uppercase;
+  text-decoration: none; white-space: nowrap;
+  transition: transform .15s var(--ease), background .15s;
+}
+.btn:hover { background: #262626; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn.sm { min-height: 34px; padding: 0 14px; font-size: 11px; }
+.btn svg { width: 16px; height: 16px; }
+.btn-ghost {
+  min-height: 36px; padding: 0 16px; border-radius: var(--radius);
+  background: transparent; color: var(--white); border: 1px solid #4a4a4a;
+  font: 700 11px/1 var(--display); letter-spacing: .16em; text-transform: uppercase;
+}
+.btn-ghost:hover { border-color: var(--white); }
+.btn-light { background: var(--white); color: var(--ink); border-color: var(--white); }
+.btn-light:hover { background: #dcdcdc; }
+.link {
+  background: none; border: 0; padding: 8px 4px; color: inherit;
+  font-weight: 600; text-decoration: underline; text-underline-offset: 3px;
+}
+.link.danger { color: var(--mute); }
+.link.danger:hover { color: var(--ink); }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 38px; height: 38px;
+  border: 1px solid var(--line); background: var(--white); color: var(--ink); border-radius: var(--radius);
+  text-decoration: none;
+}
+.icon-btn:hover { border-color: var(--ink); }
+.icon-btn.on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ---------- live board (stage) ---------- */
+.stage {
+  padding-block: 40px 56px;
+  background:
+    radial-gradient(900px 420px at 88% -6%, rgba(215, 222, 232, .07), transparent 62%),
+    radial-gradient(760px 380px at 4% 8%, rgba(227, 179, 94, .055), transparent 62%),
+    var(--black);
+}
+.eyebrow {
+  margin: 0 0 12px; font: 700 11px/1 var(--display);
+  letter-spacing: .34em; text-transform: uppercase; color: var(--stage-mute);
+}
+.event { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 28px 48px; }
+.event-main { flex: 1 1 420px; min-width: 0; }
+.event h1 {
+  margin: 0; font: 800 clamp(30px, 5.4vw, 64px)/1.02 var(--display);
+  letter-spacing: -.01em; text-transform: uppercase; text-wrap: balance;
+}
+.ev-tag { margin: 10px 0 0; font-size: 17px; color: #cfcfcf; }
+.ev-meta { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; color: #d9d9d9; font-size: 15px; }
+.ev-meta li { display: flex; align-items: center; gap: 8px; }
+.ev-meta svg { width: 16px; height: 16px; color: var(--stage-mute); flex: none; }
+.ev-meta .muted { color: var(--stage-mute); }
+
+/* digital countdown (seven-segment LED digits with faint "88" segments behind them) */
+@font-face {
+  font-family: "DSEG7";
+  src: url("https://cdn.jsdelivr.net/npm/dseg@0.46.0/fonts/DSEG7-Classic/DSEG7Classic-Bold.woff2") format("woff2");
+  font-display: swap;
+}
+.cd {
+  flex: 0 0 auto; padding: 16px 18px 14px; border-radius: 16px;
+  background: var(--glass); border: 1px solid var(--glass-line);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+.cd-label {
+  display: flex; align-items: center; gap: 9px; margin: 0 0 12px;
+  font: 700 11px/1 var(--display); letter-spacing: .26em; text-transform: uppercase; color: #d4d4d4;
+}
+.cd-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--platinum); box-shadow: 0 0 12px var(--platinum); animation: dotPulse 1.6s ease-in-out infinite; }
+.cd.is-open .cd-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+.cd.is-closed .cd-dot, .cd.is-ended .cd-dot { background: var(--bronze); box-shadow: 0 0 12px var(--bronze); }
+@keyframes dotPulse { 50% { opacity: .35; } }
+.cd-row { display: flex; align-items: flex-start; gap: 6px; }
+.cd-unit { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cd-num {
+  position: relative; display: block; padding: 10px 11px 9px; border-radius: 10px;
+  background: linear-gradient(180deg, #0c0c0c, #030303); border: 1px solid #1f1f1f;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, .9);
+  font: 700 clamp(28px, 3.1vw, 42px)/1 "DSEG7", "Courier New", monospace; letter-spacing: .04em;
+}
+.cd-ghost { position: absolute; left: 11px; top: 10px; color: rgba(255, 255, 255, .055); }
+.cd-val { position: relative; color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 26px rgba(215, 222, 232, .28); }
+.cd.is-open .cd-val { text-shadow: 0 0 10px rgba(255, 255, 255, .55), 0 0 26px rgba(227, 179, 94, .32); }
+.cd-cap { font: 700 9px/1 var(--display); letter-spacing: .24em; text-transform: uppercase; color: var(--stage-mute); }
+.cd-sep { font: 800 clamp(22px, 2.4vw, 32px)/1 var(--display); color: #4a4a4a; padding-top: 14px; animation: sepBlink 1s steps(1) infinite; }
+@keyframes sepBlink { 50% { opacity: .2; } }
+
+.hero {
+  margin-top: 40px; display: grid; gap: 28px 48px;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: end;
+  border-top: 1px solid var(--stage-line); padding-top: 32px;
+}
+.hero-num { display: flex; flex-direction: column; }
+.big {
+  font: 800 clamp(88px, 15vw, 196px)/.82 var(--display); letter-spacing: -.04em;
+  transition: opacity .2s;
+}
+.hero-label { margin-top: 14px; font: 700 12px/1.2 var(--display); letter-spacing: .3em; text-transform: uppercase; }
+.hero-cap { margin-top: 8px; color: var(--stage-mute); font-size: 15px; }
+.hero-cap b { color: var(--white); font-weight: 600; }
+.today {   /* same look and right edge as before (lined up with the countdown), only shorter so the sand shows */
+  justify-self: end; width: min(100%, 560px);     /* 560 keeps "Confirmed guests" on one line */
+  min-width: 0; padding: 22px 24px 24px; border-radius: 16px;
+  background: var(--glass); border: 1px solid var(--glass-line);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.today-title { margin: 0 0 18px; font: 700 11px/1 var(--display); letter-spacing: .3em; text-transform: uppercase; color: var(--stage-mute); }
+.today-stats { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.today-stats > div { min-width: 0; }
+.today-stats > div + div { border-left: 1px solid var(--stage-line); padding-left: 16px; }
+.today-stats dt { font: 700 10px/1.3 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--stage-mute); }
+.today-stats dd { margin: 10px 0 0; font: 800 clamp(34px, 4.4vw, 56px)/1 var(--display); }
+
+.stats {
+  margin: 40px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-top: 1px solid var(--stage-line); border-bottom: 1px solid var(--stage-line);
+}
+.stats > div { padding: 20px 18px 18px; border-left: 1px solid var(--stage-line); min-width: 0; }
+.stats > div:first-child { border-left: 0; padding-left: 0; }
+.stats dt { font: 700 10.5px/1.2 var(--display); letter-spacing: .24em; text-transform: uppercase; color: var(--stage-mute); }
+.stats dd { margin: 10px 0 2px; font: 800 clamp(30px, 4vw, 46px)/1 var(--display); }
+.stats small { color: var(--stage-mute); font-size: 12px; }
+
+/* ---------- agent ranking ---------- */
+.arrival-chart { margin-top: 36px; }
+.arrival-chart h2 { margin: 0; font: 700 13px/1.2 var(--display); letter-spacing: .16em; text-transform: uppercase; }
+.arrival-chart h2 small { margin-left: 8px; font: 500 12px/1 var(--body); letter-spacing: 0; text-transform: none; color: var(--stage-mute); }
+.arrival-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.arrival-list li { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 12px; align-items: center; font-size: 13px; }
+.arrival-list .bar { height: 8px; background: var(--stage-line); }
+.arrival-list .bar i { display: block; height: 100%; background: var(--gold); }
+.board-grid { margin-top: 44px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; align-items: start; }
+.board-grid h2 {
+  margin: 0; font: 700 12px/1 var(--display); letter-spacing: .3em; text-transform: uppercase;
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
+}
+.board-grid h2 small { font: 500 12px/1 var(--body); letter-spacing: 0; text-transform: none; color: var(--stage-mute); }
+.rank-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 14px; }
+.tier-key { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.tk { font: 700 9.5px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; border: 1px solid; }
+.tk-elite { color: var(--gold); border-color: rgba(227, 179, 94, .45); background: rgba(227, 179, 94, .15); }
+.tk-core { color: var(--platinum); border-color: rgba(215, 222, 232, .45); background: rgba(215, 222, 232, .15); }
+.tk-growth { color: var(--bronze); border-color: rgba(201, 131, 80, .45); background: rgba(201, 131, 80, .15); }
+
+/* motivation ticker */
+.ticker {
+  position: relative; overflow: hidden; height: 38px; margin-bottom: 26px; border-radius: 999px;
+  background: var(--glass); border: 1px solid var(--glass-line);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.ticker-track { display: flex; width: max-content; height: 100%; animation: marquee var(--dur, 40s) linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+.ticker-run { display: flex; align-items: center; gap: 22px; padding-right: 22px; white-space: nowrap; }
+.ticker-item { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #dcdcdc; }
+.ticker-item b { color: #fff; font-weight: 600; }
+.ticker-item svg { width: 15px; height: 15px; color: var(--gold); flex: none; }
+.ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: #3c3c3c; flex: none; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* podium: 2nd · 1st · 3rd */
+.podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "p2 p1 p3"; gap: 12px; align-items: end; margin-bottom: 12px; }
+.pod {
+  position: relative; min-width: 0; text-align: center; padding: 22px 12px 16px; border-radius: 16px;
+  background: linear-gradient(180deg, var(--tier-soft), rgba(255, 255, 255, .03) 58%);
+  border: 1px solid var(--glass-line); border-top: 3px solid var(--tier);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.pod.p1 { grid-area: p1; padding-top: 32px; padding-bottom: 20px; box-shadow: 0 0 60px rgba(227, 179, 94, .14); }
+.pod.p2 { grid-area: p2; }
+.pod.p3 { grid-area: p3; }
+.pod-crown {
+  position: absolute; left: 50%; top: -19px; width: 36px; height: 36px; margin-left: -18px; display: none;
+  color: var(--tier); filter: drop-shadow(0 0 10px var(--tier)); animation: crownFloat 3s ease-in-out infinite;
+}
+.pod-crown svg { width: 100%; height: 100%; }
+.pod.p1 .pod-crown { display: block; }
+@keyframes crownFloat { 50% { transform: translateY(-5px) rotate(-5deg); } }
+.pod-photo { position: relative; width: 76px; height: 76px; margin: 0 auto 12px; }
+.pod.p1 .pod-photo { width: 104px; height: 104px; }
+.pod-photo .av { width: 100%; height: 100%; z-index: 1; box-shadow: 0 0 0 3px #000; }
+.pod-ring {
+  position: absolute; inset: -5px; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--tier), transparent 30%, var(--tier) 55%, transparent 80%, var(--tier));
+  animation: spin 4s linear infinite;
+}
+.pod.p2 .pod-ring, .pod.p3 .pod-ring { animation-duration: 8s; opacity: .85; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.pod-medal {
+  position: absolute; right: -4px; bottom: -2px; z-index: 2; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--tier); color: #1d1406; font: 800 13px/1 var(--display);
+  box-shadow: 0 0 0 3px #000;
+}
+.pod.p1 .pod-medal { width: 30px; height: 30px; font-size: 15px; }
+.pod-name {
+  margin: 0; font-weight: 600; font-size: 15px; line-height: 1.25; min-height: 2.5em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.pod .tier-tag { display: inline-block; margin-top: 8px; }
+.pod-num { margin: 10px 0 0; font: 800 clamp(34px, 3.6vw, 46px)/1 var(--display); }
+.pod.p1 .pod-num { font-size: clamp(42px, 4.4vw, 58px); }
+.pod-num b, .rk-num b { display: inline-block; font-weight: 800; }
+.pod-num small { display: block; margin-top: 4px; font: 700 9px/1 var(--display); letter-spacing: .24em; text-transform: uppercase; color: var(--stage-mute); }
+.pod-sub { margin: 8px 0 0; font-size: 12px; color: var(--stage-mute); }
+.pod-sub b, .rk-sub b { color: var(--tier); font-weight: 700; }
+.pod-gap { margin: 8px 0 0; font: 700 10px/1.3 var(--display); letter-spacing: .08em; text-transform: uppercase; color: var(--tier); }
+
+/* tier cards: 4th and below */
+.ranks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.rk {
+  position: relative; display: grid; grid-template-columns: 40px 46px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 12px 16px 12px 12px; border-radius: 12px;
+  background: rgba(255, 255, 255, .03); border: 1px solid var(--glass-line); border-left: 4px solid var(--tier);
+  transition: background .3s;
+}
+.rk:hover { background: rgba(255, 255, 255, .055); }
+.rk-rank { font: 800 15px/1 var(--display); color: var(--tier); text-align: center; }
+.rk .av { width: 46px; height: 46px; box-shadow: 0 0 0 2px #000, 0 0 0 4px var(--tier); }
+.rk-main { min-width: 0; }
+.rk-name { margin: 0; font-weight: 600; font-size: 15px; display: flex; align-items: center; min-width: 0; }
+.rk-name .nm { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-name .hot-badge { flex: none; }
+.rk-bar { display: block; height: 5px; margin: 8px 0 7px; border-radius: 99px; background: rgba(255, 255, 255, .07); overflow: hidden; }
+.rk-bar i {
+  display: block; height: 100%; width: 0; border-radius: inherit;
+  background: linear-gradient(90deg, var(--tier), rgba(255, 255, 255, .9)); box-shadow: 0 0 12px var(--tier);
+  transition: width 1.1s var(--ease);
+}
+.rk-sub { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 12px; color: var(--stage-mute); }
+.rk-sub .gap { display: inline-flex; align-items: center; gap: 4px; color: var(--tier); font-weight: 600; }
+.rk-sub .gap svg { width: 10px; height: 10px; }
+.rk-num { margin: 0; text-align: right; font: 800 30px/1 var(--display); min-width: 2.2ch; }
+.rk-num small { display: block; margin-top: 3px; font: 700 9px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--stage-mute); }
+.rk.off .rk-name, .pod.off .pod-name { color: var(--stage-mute); }
+.tier-tag {
+  font: 700 9px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px;
+  color: var(--tier); background: var(--tier-soft); border: 1px solid rgba(255, 255, 255, .12);
+}
+.hot-badge {
+  display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; padding: 2px 7px 2px 5px; border-radius: 999px;
+  font: 700 9px/1.4 var(--display); letter-spacing: .1em; text-transform: uppercase; vertical-align: 2px;
+  color: var(--bronze); background: rgba(201, 131, 80, .15);
+}
+.hot-badge svg { width: 11px; height: 11px; animation: flicker 1.2s ease-in-out infinite; }
+@keyframes flicker { 50% { transform: scale(1.2) rotate(-6deg); opacity: .8; } }
+
+/* avatars: photo or initials, always round */
+.av {
+  position: relative; display: inline-grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%;
+  overflow: hidden; background: radial-gradient(circle at 30% 25%, #2c2c2c, #0b0b0b); color: #fff;
+}
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.av b { font: 800 14px/1 var(--display); letter-spacing: .02em; }
+.av-sm { width: 34px; height: 34px; }
+.av-sm b { font-size: 12px; }
+.av-xl b { font-size: 28px; }
+.av-hero { width: 120px; height: 120px; box-shadow: 0 0 0 4px var(--gold), 0 0 50px rgba(227, 179, 94, .45); }
+.av-hero b { font-size: 38px; }
+
+/* motion */
+.enter { animation: popIn .75s cubic-bezier(.2, 1.35, .35, 1) both; animation-delay: calc(var(--i, 0) * 75ms); }
+@keyframes popIn { 0% { opacity: 0; transform: translateY(22px) scale(.82); } 65% { opacity: 1; transform: translateY(-3px) scale(1.03); } 100% { opacity: 1; transform: none; } }
+.bump { animation: bump .9s cubic-bezier(.2, 1.4, .3, 1); }
+@keyframes bump { 30% { transform: scale(1.4); color: var(--tier); text-shadow: 0 0 24px var(--tier); } }
+.glow { animation: cardGlow 1.4s ease-out; }
+@keyframes cardGlow { 35% { box-shadow: 0 0 0 1px var(--tier), 0 0 42px var(--tier-soft), 0 0 20px var(--tier-soft); } }
+.plus {
+  position: absolute; right: 16px; top: 4px; z-index: 3; pointer-events: none;
+  font: 800 18px/1 var(--display); color: var(--tier); text-shadow: 0 0 14px var(--tier); animation: floatUp 1.6s ease-out forwards;
+}
+@keyframes floatUp { 0% { opacity: 0; transform: translateY(10px) scale(.8); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-40px) scale(1.2); } }
+.up-chip {
+  position: absolute; left: 8px; top: -9px; z-index: 3; display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px 3px 6px; border-radius: 999px; background: var(--gold); color: #1d1406;
+  font: 800 9px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; animation: chipLife 4.2s ease forwards;
+}
+.up-chip svg { width: 9px; height: 9px; }
+@keyframes chipLife { 0% { opacity: 0; transform: translateY(6px) scale(.8); } 10%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+
+/* Latest: floating glass cards */
+#hFeed { margin-bottom: 14px; justify-content: space-between; }
+.feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.feed li {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 12px; font-size: 13.5px; color: #d6d6d6;
+  background: rgba(255, 255, 255, .03); border: 1px solid var(--glass-line);
+  animation: bob 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * -.8s);
+}
+.feed li.new { animation: floatIn .9s cubic-bezier(.2, 1.2, .3, 1) both, bob 6s ease-in-out .9s infinite; border-color: rgba(227, 179, 94, .45); }
+.feed li p { margin: 0; min-width: 0; }
+.feed time { color: var(--stage-mute); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.feed b { color: var(--white); font-weight: 600; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes floatIn { 0% { opacity: 0; transform: translateY(26px) scale(.94); } 100% { opacity: 1; transform: none; } }
+.tag {
+  display: inline-block; margin-left: 4px; font: 700 9px/1 var(--display); letter-spacing: .16em; text-transform: uppercase;
+  border: 1px solid #4a4a4a; border-radius: 999px; padding: 3px 6px; vertical-align: 1px; color: #d6d6d6;
+}
+.tag.st-confirmed { color: #1d1406; background: var(--gold); border-color: var(--gold); }
+.tag.st-maybe { color: var(--platinum); background: rgba(215, 222, 232, .12); border-color: rgba(215, 222, 232, .5); }
+.tag.st-declined { color: var(--bronze); background: rgba(201, 131, 80, .12); border-color: rgba(201, 131, 80, .5); }
+.tag.st-arrived { color: #000; background: #fff; border-color: #fff; }
+
+.welcome {
+  margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--stage-line);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px;
+}
+.welcome p { margin: 0; max-width: 52ch; color: #d6d6d6; font-size: 16px; }
+.event-line { margin: 10px 0 0; color: var(--mute); font-size: 14px; }
+.stage-empty { color: var(--stage-mute); font-size: 14px; padding: 18px; border: 1px dashed #2a2a2a; border-radius: 12px; }
+.feed li.stage-empty, .ranks li.stage-empty { display: block; animation: none; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.stage-foot { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; color: var(--stage-mute); font-size: 12px; }
+.stage-foot .grow { flex: 1; }
+.stage-foot .btn-ghost { display: inline-flex; align-items: center; gap: 8px; }
+.stage-foot svg { width: 14px; height: 14px; }
+.pop { animation: pop .7s var(--ease); }
+@keyframes pop { 0% { opacity: .35; } 100% { opacity: 1; } }
+
+/* celebrations */
+.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 80; }
+.celebrate { position: fixed; inset: 0; z-index: 75; display: grid; place-items: center; padding: 24px; pointer-events: none; }
+.celebrate-card {
+  max-width: 100%; text-align: center; padding: 30px 44px 28px; border-radius: 22px;
+  background: rgba(0, 0, 0, .78); border: 1px solid rgba(227, 179, 94, .5); box-shadow: 0 0 90px rgba(227, 179, 94, .28);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); animation: celebrateIn .7s cubic-bezier(.2, 1.4, .3, 1) both;
+}
+.celebrate.out .celebrate-card { animation: celebrateOut .5s ease-in forwards; }
+.celebrate-av { display: grid; place-items: center; }
+.celebrate-kicker { margin: 18px 0 8px; color: var(--gold); font: 800 12px/1 var(--display); letter-spacing: .36em; text-transform: uppercase; }
+.celebrate-name { margin: 0; font: 800 clamp(24px, 4vw, 44px)/1.05 var(--display); text-transform: uppercase; text-wrap: balance; }
+.celebrate-sub { margin: 10px 0 0; color: #cfcfcf; }
+@keyframes celebrateIn { 0% { opacity: 0; transform: scale(.6) translateY(30px); } 100% { opacity: 1; transform: none; } }
+@keyframes celebrateOut { to { opacity: 0; transform: scale(.92) translateY(-20px); } }
+
+/* TV mode: board only, bigger, no chrome */
+body.tv .tabs, body.tv .top-right > :not(.live), body.tv .stage-foot .tv-hide { display: none !important; }
+body.tv .stage { padding-top: 28px; }
+body.tv .wrap { max-width: 1680px; }
+body.tv .feed li, body.tv .rk-name { font-size: 17px; }
+body.tv .cd-num { font-size: 50px; }
+
+/* ---------- Dubai sand (draft) ----------
+   Golden sand grains (app-sand.js, three.js) move behind the board, the way the Argonaut landing does.
+   Warm black stage, gold for the leaders, platinum and bronze for the other tiers. */
+:root { --gold-hi: #f7e2b0; --gold-deep: #9a7031; --sand: #dcc28f; }
+.stage {
+  position: relative; isolation: isolate;
+  background:
+    radial-gradient(1100px 520px at 85% -8%, rgba(227, 179, 94, .1), transparent 60%),
+    radial-gradient(900px 480px at 0% 12%, rgba(201, 131, 80, .07), transparent 60%),
+    #050403;
+  --stage-mute: #9d9384;
+  --stage-line: #2b251c;
+}
+.stage > .wrap { position: relative; z-index: 1; transition: opacity 1.1s ease; }
+/* the opening: the board waits dimmed while the sand gathers into the DEEN logo, then fades in */
+body.sand-intro .stage > .wrap { opacity: .05; }
+/* the idle cycle: while the sand stands as the DEEN logo, the board steps back (any touch brings it back) */
+body.sand-logo .stage > .wrap { opacity: .22; }
+.sand {
+  position: fixed; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; pointer-events: none;
+  opacity: 0; transition: opacity 1.8s ease;
+}
+body.sand-on .sand { opacity: 1; }
+.stage .eyebrow { color: #c9a465; }
+.ev-meta svg { color: #b8975a; }
+
+/* gold numerals */
+.big, .pod.p1 .pod-num b {
+  background: linear-gradient(180deg, #fff9ea 0%, #f3d38c 42%, #c9963f 78%, #9a7031 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.big { filter: drop-shadow(0 10px 40px rgba(227, 179, 94, .28)); }
+.hero-label { color: #f3e6cc; }
+
+/* countdown: warm LED digits */
+.cd-num { background: linear-gradient(180deg, #120e08, #050403); border-color: #2e2618; }
+.cd-val { color: #fff6e2; text-shadow: 0 0 10px rgba(255, 236, 200, .55), 0 0 28px rgba(227, 179, 94, .38); }
+.cd.is-open .cd-val { text-shadow: 0 0 10px rgba(255, 236, 200, .6), 0 0 30px rgba(227, 179, 94, .5); }
+.cd-dot, .cd.is-open .cd-dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+.cd-ghost { color: rgba(255, 220, 160, .06); }
+
+/* glass panels: the sand glows softly through them */
+.cd, .today, .pod {
+  background: linear-gradient(180deg, rgba(40, 31, 19, .36), rgba(10, 8, 5, .52));
+  -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+  border-color: rgba(227, 179, 94, .2);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 200, .16), 0 24px 60px rgba(0, 0, 0, .5);
+}
+.pod { background: linear-gradient(180deg, var(--tier-soft), rgba(10, 8, 5, .74) 58%); border-top-color: var(--tier); }
+.pod.p1 { box-shadow: inset 0 1px 0 rgba(255, 236, 200, .14), 0 0 70px rgba(227, 179, 94, .16); }
+.stats { background: rgba(6, 5, 3, .55); border-color: var(--stage-line); }
+.stats > div:first-child { padding-left: 18px; }
+.rk, .feed li { background: rgba(12, 10, 6, .74); border-color: rgba(227, 179, 94, .12); }
+.rk:hover { background: rgba(24, 19, 12, .8); }
+.ticker { background: rgba(10, 8, 5, .66); border-color: rgba(227, 179, 94, .16); }
+.tag.st-confirmed { box-shadow: 0 0 12px rgba(227, 179, 94, .35); }
+
+
+/* ---------- paper views ---------- */
+.paper { background: var(--white); color: var(--ink); min-height: calc(100vh - 110px); padding-block: 32px 72px; color-scheme: light; }
+.paper .eyebrow { color: var(--mute); }
+.paper-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.paper-head h2 { margin: 0; font: 800 clamp(26px, 4vw, 38px)/1.05 var(--display); text-transform: uppercase; letter-spacing: -.005em; }
+.lede { max-width: 62ch; color: var(--mute); margin: 12px 0 0; }
+.closed-note {
+  margin-top: 18px; padding: 12px 16px; border: 1px dashed var(--ink); border-radius: var(--radius); font-size: 14px;
+}
+.mystats {
+  margin: 24px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line);
+}
+.mystats > div { padding: 14px 16px 14px 0; min-width: 0; }
+.mystats > div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+.mystats dt { font: 700 10px/1.2 var(--display); letter-spacing: .22em; text-transform: uppercase; color: var(--mute); }
+.mystats dd { margin: 8px 0 0; font: 800 28px/1 var(--display); }
+.mystats dd small { font: 500 12px/1 var(--body); color: var(--mute); margin-left: 4px; }
+
+.filters { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--line); background: var(--white); border-radius: 999px; padding: 7px 12px;
+  font: 600 12.5px/1 var(--body); display: inline-flex; gap: 6px; align-items: center;
+}
+.chip b { font-weight: 700; color: var(--mute); font-variant-numeric: tabular-nums; }
+.chip:hover { border-color: var(--ink); }
+.chip.on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.chip.on b { color: #bdbdbd; }
+.search { flex: 1 1 220px; min-width: 0; position: relative; }
+.search input { width: 100%; }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--mute); pointer-events: none; }
+.search input { padding-left: 36px !important; }
+
+input[type=text], input[type=tel], input[type=search], input[type=password], input[type=date], input[type=time], input[type=number], select, textarea {
+  width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cfcfcf; border-radius: var(--radius);
+  background: var(--white); color: var(--ink); font-size: 16px;
+}
+textarea { resize: vertical; min-height: 84px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+select.inline { width: auto; min-height: 38px; padding: 6px 10px; font-size: 14px; }
+
+.list { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; align-items: center;
+  padding: 16px 0; border-bottom: 1px solid var(--line);
+}
+.row.flash { animation: flash 1.2s var(--ease); }
+@keyframes flash { from { background: var(--mist); } to { background: transparent; } }
+.g-name { margin: 0; font-weight: 600; font-size: 16.5px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.g-party { font-weight: 500; font-size: 13px; color: var(--mute); }
+.g-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--mute); display: flex; flex-wrap: wrap; gap: 2px 14px; }
+.g-sub .g-mob { color: var(--ink); font-variant-numeric: tabular-nums; }
+.g-notes { margin: 6px 0 0; font-size: 13.5px; color: #3d3d3d; max-width: 70ch; }
+.g-agent { font-weight: 600; color: var(--ink); }
+.row-side { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.row-act { display: flex; gap: 6px; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 11px;
+  font: 700 10.5px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap;
+  border: 1.5px solid var(--ink);
+}
+.p-confirmed { background: var(--ink); color: var(--white); }
+.p-maybe { border-style: dashed; }
+.p-awaiting { border-color: transparent; background: var(--mist); color: #3a3a3a; }
+.p-declined { border-color: var(--line); color: var(--mute); text-decoration: line-through; }
+.p-on { background: var(--ink); color: var(--white); }
+.p-off { border-color: var(--line); color: var(--mute); }
+.arrived {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
+}
+.arrived svg { width: 16px; height: 16px; }
+
+.empty { margin-top: 18px; padding: 40px 24px; border: 1px dashed #bdbdbd; border-radius: var(--radius); text-align: center; }
+.empty h3 { margin: 0 0 6px; font: 800 18px/1.2 var(--display); text-transform: uppercase; }
+.empty p { margin: 0 auto 16px; color: var(--mute); max-width: 46ch; }
+
+/* manager: event form */
+.form-grid { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; max-width: 820px; }
+.form-grid .span { grid-column: 1 / -1; }
+.panel { margin-top: 32px; max-width: 820px; border-top: 2px solid var(--ink); padding-top: 18px; }
+.panel h3 { margin: 0 0 6px; font: 800 15px/1.2 var(--display); text-transform: uppercase; letter-spacing: .04em; }
+.panel p { margin: 0 0 14px; color: var(--mute); max-width: 62ch; }
+.copy-row { display: flex; gap: 8px; }
+.copy-row input { flex: 1; min-width: 0; font-size: 14px; }
+.actions-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
+.saved-note { color: var(--mute); font-size: 13px; }
+
+/* fields */
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field > span, .field-label { font: 700 10.5px/1.2 var(--display); letter-spacing: .2em; text-transform: uppercase; }
+.field small { color: var(--mute); font-size: 12px; }
+.field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.stepper { display: inline-flex; align-items: stretch; border: 1px solid #cfcfcf; border-radius: var(--radius); width: max-content; }
+.stepper button { width: 46px; min-height: 44px; border: 0; background: var(--white); font-size: 20px; }
+.stepper button:hover { background: var(--mist); }
+.stepper output { min-width: 52px; display: grid; place-items: center; font: 800 20px/1 var(--display); border-left: 1px solid #cfcfcf; border-right: 1px solid #cfcfcf; }
+.seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; }
+.seg span {
+  display: grid; place-items: center; min-height: 44px; padding: 0 4px; text-align: center;
+  font: 700 11px/1.1 var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
+}
+.seg label + label span { border-left: 1px solid var(--ink); }
+.seg input:checked + span { background: var(--ink); color: var(--white); }
+.seg input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: -4px; }
+.seg.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.check { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
+.check input { width: 20px; height: 20px; accent-color: var(--ink); }
+.more { border-top: 1px solid var(--line); padding-top: 4px; }
+.more summary { cursor: pointer; padding: 10px 0; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
+.more summary::-webkit-details-marker { display: none; }
+.more summary::before { content: "+"; font: 700 18px/1 var(--display); width: 16px; }
+.more[open] summary::before { content: "\2212"; }
+.more summary small { color: var(--mute); font-weight: 500; }
+.more .field { margin-bottom: 14px; }
+.form-err { margin: 0; padding: 10px 12px; border-left: 3px solid var(--ink); background: var(--mist); font-size: 14px; font-weight: 500; }
+.pin-input { letter-spacing: .5em; font: 800 22px/1 var(--display) !important; text-align: center; }
+
+/* ---------- sheets (dialogs) ---------- */
+.sheet { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px; }
+.sheet-back { position: absolute; inset: 0; background: rgba(0, 0, 0, .72); animation: fade .2s; }
+.sheet-card {
+  position: relative; width: min(560px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column;
+  background: var(--white); color: var(--ink); border-radius: 6px; color-scheme: light;
+  animation: rise .28s var(--ease);
+}
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 22px 6px; }
+.sheet-head h3 { margin: 0; font: 800 20px/1.1 var(--display); text-transform: uppercase; }
+.x { width: 40px; height: 40px; border: 0; background: none; font-size: 26px; line-height: 1; margin-right: -8px; }
+.sheet-body { padding: 12px 22px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+.sheet-foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 22px 18px;
+  border-top: 1px solid var(--line);
+}
+.sheet-foot .grow { flex: 1; }
+.confirm-del { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.hint { margin: 0; color: var(--mute); font-size: 14px; }
+.names { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.name-btn {
+  text-align: left; min-height: 48px; padding: 10px 14px; border: 1px solid #cfcfcf; border-radius: var(--radius);
+  background: var(--white); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.name-btn:hover { border-color: var(--ink); }
+.name-btn.on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.name-btn.mgr { grid-column: 1 / -1; font: 700 11px/1 var(--display); letter-spacing: .2em; text-transform: uppercase; text-align: center; border-style: dashed; }
+.names-empty { grid-column: 1 / -1; color: var(--mute); font-size: 14px; padding: 6px 0; }
+@keyframes rise { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fade { from { opacity: 0; } }
+
+.toast {
+  position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 60;
+  width: max-content; max-width: calc(100% - 32px); display: flex; align-items: center; gap: 14px;
+  background: var(--white); color: var(--ink); border: 1px solid var(--ink); border-radius: 6px;
+  padding: 12px 14px 12px 18px; box-shadow: 0 12px 40px rgba(0, 0, 0, .35); font-size: 14px; font-weight: 500;
+  animation: rise .25s var(--ease);
+}
+.toast a { color: var(--ink); font-weight: 700; white-space: nowrap; }
+
+.boot { padding: 80px 0; text-align: center; color: var(--stage-mute); }
+.boot .logo { width: 140px; margin: 0 auto 20px; color: var(--white); opacity: .9; }
+.boot p { margin: 0; }
+
+/* avatars in the white views (CEO agents list, photo upload, agent's own header) */
+.row-who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.row-who > div { min-width: 0; }
+.row-who .av { width: 44px; height: 44px; }
+.photo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.photo-row .av { width: 64px; height: 64px; }
+.photo-row .av b { font-size: 20px; }
+.mine-eyebrow { display: flex; align-items: center; gap: 10px; }
+.mine-eyebrow .av { width: 28px; height: 28px; }
+.mine-eyebrow .av b { font-size: 11px; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 920px) {
+  .hero { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .today { justify-self: stretch; width: auto; }
+  .board-grid { grid-template-columns: minmax(0, 1fr); }
+  .podium { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "p1 p1" "p2 p3"; }
+  .pod.p1 { width: 100%; max-width: 380px; justify-self: center; }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stats > div:nth-child(4) { border-left: 0; padding-left: 0; }
+  .stats > div:nth-child(n+4) { border-top: 1px solid var(--stage-line); }
+}
+@media (max-width: 640px) {
+  body { font-size: 14.5px; }
+  .logo { width: 74px; }
+  .brand-tag { display: none; }
+  .top-in { min-height: 56px; }
+  .stage { padding-block: 26px 40px; }
+  .hero { margin-top: 28px; padding-top: 24px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats > div { padding: 16px 12px 14px 0; }
+  .stats > div:nth-child(odd) { border-left: 0; padding-left: 0; }
+  .stats > div:nth-child(even) { padding-left: 14px; border-left: 1px solid var(--stage-line); }
+  .stats > div:nth-child(n+3) { border-top: 1px solid var(--stage-line); }
+  .stats > div:last-child { grid-column: 1 / -1; border-left: 0; padding-left: 0; }
+  .mystats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mystats > div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .mystats > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .row-side { justify-content: space-between; }
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+  .sheet { padding: 0; place-items: end stretch; }
+  .sheet-card { width: 100%; max-height: 92vh; border-radius: 10px 10px 0 0; }
+  .sheet-foot { padding-bottom: max(18px, env(safe-area-inset-bottom, 0px)); }
+  .seg span { font-size: 10px; letter-spacing: .04em; }
+  .tabs { gap: 0; margin-left: -8px; }
+  .tabs button { padding: 13px 8px 12px; font-size: 11px; letter-spacing: .06em; }
+  .names { grid-template-columns: minmax(0, 1fr); }
+  .me-name { display: none; }
+  .event { gap: 22px; }
+  .cd { width: 100%; padding: 14px 12px 12px; }
+  .cd-row { justify-content: space-between; gap: 2px; }
+  .cd-num { padding: 8px 7px 7px; font-size: 25px; }
+  .cd-ghost { left: 7px; top: 8px; }
+  .cd-sep { padding-top: 10px; font-size: 20px; }
+  .rk { grid-template-columns: 30px 40px minmax(0, 1fr) auto; gap: 10px; padding: 10px 12px 10px 8px; }
+  .rk .av { width: 40px; height: 40px; }
+  .rk-num { font-size: 24px; }
+  .pod { padding-inline: 8px; }
+  .pod-name { font-size: 13px; }
+  .feed li { grid-template-columns: 30px minmax(0, 1fr); }
+  .feed li time { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="deen-logo" viewBox="0 -2 1016 458"><path fill="currentColor" fill-rule="evenodd" d="M0.50 85.25L0.00 86.25L0.25 339.50L21.75 339.75L134.75 339.00L149.00 337.50L151.50 336.75L153.25 336.75L156.25 335.75L157.50 335.75L160.25 334.75L161.50 334.75L163.75 333.75L165.00 333.75L167.00 332.75L171.00 331.75L172.50 330.75L173.50 330.75L175.00 329.75L176.00 329.75L177.50 328.75L180.50 327.75L187.00 324.50L187.75 323.75L190.50 322.50L197.00 318.50L205.00 312.75L212.25 306.50L220.75 297.75L227.75 289.00L234.75 278.25L240.50 267.25L244.50 257.25L248.25 244.25L250.25 233.25L251.50 218.50L251.50 203.75L250.25 190.75L247.50 177.25L244.50 167.50L238.75 154.00L233.75 145.00L227.50 135.75L220.75 127.25L213.50 120.00L204.00 112.00L196.00 106.25L187.50 101.00L177.75 96.00L169.25 92.50L162.50 90.25L160.50 90.00L159.00 89.25L157.75 89.25L151.00 87.50L142.00 86.25L133.75 85.75ZM77.75 146.50L118.75 146.75L123.50 147.75L126.00 147.75L128.25 148.75L130.00 148.75L131.00 149.50L133.00 149.75L134.25 150.75L135.25 150.75L136.75 151.75L137.50 151.75L138.75 152.75L143.25 155.00L151.25 161.25L155.75 166.00L159.75 171.00L165.75 181.50L167.75 186.75L169.00 192.25L169.75 194.00L170.75 199.00L171.75 207.50L171.50 222.00L170.50 228.75L169.00 234.00L168.75 236.25L168.00 237.50L167.75 239.25L164.75 247.00L161.75 252.75L158.00 258.25L154.75 262.25L148.00 268.50L143.25 271.75L139.00 274.00L137.75 274.25L136.75 275.00L135.75 275.00L134.25 276.00L132.75 276.00L131.00 277.00L128.50 277.00L125.25 278.00L105.00 278.00L78.75 279.00L77.75 278.75L77.00 277.75L76.75 147.50ZM277.50 339.00L278.50 339.75L488.00 339.75L488.75 339.25L488.75 280.75L488.25 280.25L354.50 280.00L353.75 279.25L354.00 242.50L354.75 241.50L355.50 241.25L472.25 241.50L473.25 241.25L473.75 240.25L473.25 182.25L355.00 182.00L354.00 181.25L353.75 180.25L353.75 146.00L354.75 144.75L733.50 144.75L733.50 85.75L733.00 85.25L278.25 85.25L277.50 86.25ZM723.25 182.50L722.00 181.75L525.50 182.00L525.00 182.50L525.25 339.50L728.00 339.75L735.50 339.25L735.75 294.25L735.25 280.25L603.25 280.00L602.50 279.50L602.50 242.25L603.50 241.25L722.50 241.50L723.25 240.50ZM774.25 85.50L774.00 339.00L774.50 339.50L843.75 339.50L844.25 339.00L844.25 207.50L844.50 201.50L845.25 201.25L846.75 202.75L852.00 210.00L862.75 223.50L879.00 245.25L884.75 252.25L901.00 274.00L904.00 277.50L905.00 279.25L941.75 326.75L950.00 338.00L951.50 339.50L957.25 339.75L1015.50 339.25L1016.00 338.75L1016.00 86.00L1014.75 85.25L948.50 85.25L947.50 85.75L947.00 123.25L946.75 220.50L946.00 221.25L944.75 220.25L936.75 209.50L930.75 202.25L929.75 200.50L900.25 162.50L887.75 145.75L876.75 132.00L867.50 119.50L857.00 106.25L856.75 105.50L841.00 85.50ZM456.75 0.00L449.75 2.00L443.75 5.25L440.25 8.00L435.25 13.75L432.00 19.75L430.25 25.50L429.75 29.00L430.00 37.25L431.50 43.25L434.50 49.50L437.00 53.00L442.50 58.25L448.50 61.75L454.00 63.75L460.00 64.75L466.50 64.50L473.00 63.00L479.75 59.75L483.25 57.25L488.75 51.25L491.75 46.25L491.75 45.50L492.75 44.00L492.75 42.75L493.75 41.00L493.75 39.25L494.75 36.25L494.75 28.00L493.75 25.25L493.75 23.25L490.50 15.75L487.50 11.50L481.75 6.00L478.25 3.75L472.00 1.00L469.75 0.75L467.75 0.00L464.00 -0.25ZM548.50 0.00L541.50 2.00L536.75 4.50L533.00 7.25L528.00 12.50L525.00 17.25L525.00 18.00L523.00 21.75L523.00 23.25L522.00 25.50L522.00 28.25L521.50 30.25L522.00 39.00L522.75 40.50L523.00 42.75L524.00 44.25L524.00 45.25L525.00 46.50L525.00 47.25L527.25 51.00L530.50 55.00L534.50 58.50L540.50 62.00L545.25 63.75L550.25 64.75L558.25 64.75L560.75 64.00L562.25 64.00L566.00 62.75L572.00 59.75L577.00 55.75L580.50 51.75L584.25 45.25L586.00 39.75L586.75 35.00L586.50 27.50L585.00 21.25L582.50 15.75L579.50 11.50L573.75 6.00L567.25 2.25L561.00 0.25L556.50 -0.25ZM37.75 394.75L34.25 393.75L31.75 393.50L0.25 393.75L0.25 452.50L13.00 452.75L13.75 452.25L14.00 436.50L14.75 435.75L26.50 436.25L29.50 435.75L32.75 435.75L35.25 434.75L36.75 434.75L38.25 433.75L39.25 433.75L42.25 431.75L45.25 429.00L46.75 427.00L48.25 424.25L49.75 420.00L50.25 415.25L49.75 408.75L47.75 403.50L45.75 400.50L42.00 397.00ZM14.00 406.00L15.00 405.50L19.50 405.00L25.75 405.00L28.25 405.75L30.25 405.75L33.00 407.00L35.00 408.50L36.75 411.50L37.00 415.25L35.75 419.00L32.75 422.50L30.25 424.00L25.00 425.25L14.50 425.00L14.00 424.50L13.75 416.50ZM112.00 393.50L111.50 394.25L112.00 452.50L123.50 452.75L124.25 452.25L124.50 434.50L125.75 433.25L127.50 432.75L133.50 432.75L135.25 434.00L148.00 450.50L149.75 452.25L152.00 453.00L155.50 453.25L163.25 452.50L163.00 451.00L149.25 431.25L149.50 430.00L154.25 427.00L157.25 424.00L159.50 420.75L159.75 419.50L160.75 418.00L160.75 416.50L161.50 414.25L161.50 410.25L160.75 408.00L160.75 406.50L158.50 402.00L157.00 400.00L154.00 397.00L151.25 395.25L146.75 393.75L119.25 393.25ZM124.25 406.50L125.00 405.75L143.25 405.75L146.00 408.00L147.25 410.25L147.25 416.00L146.00 418.25L145.00 419.25L141.25 421.25L137.75 422.00L125.75 421.75L124.75 420.75ZM247.00 392.00L240.50 393.50L235.00 396.00L230.75 399.00L226.00 404.00L224.25 406.50L222.00 411.00L220.75 414.75L219.75 420.50L220.00 427.75L221.75 434.25L224.25 439.25L228.00 444.25L232.25 448.00L239.00 451.75L241.75 452.75L244.00 453.00L244.75 453.50L255.50 453.75L258.50 452.75L260.00 452.75L267.25 449.50L271.00 446.75L275.50 442.00L278.00 438.25L280.75 431.75L281.75 427.00L281.75 419.00L280.75 414.25L278.50 408.50L275.50 403.75L270.25 398.50L265.75 395.50L258.75 392.75L252.25 391.75ZM249.00 404.00L253.50 404.00L256.50 404.75L260.75 407.25L264.00 410.50L264.00 411.00L266.00 413.75L266.00 414.75L267.00 416.50L267.00 418.00L267.75 420.50L267.75 424.50L267.00 427.25L267.00 429.00L266.00 430.75L266.00 431.75L264.00 435.25L261.25 438.25L259.00 440.00L253.75 442.00L246.50 441.75L243.75 440.75L240.75 438.75L236.75 434.25L236.75 433.50L236.00 432.75L235.75 431.25L234.75 429.75L234.75 428.00L234.00 425.75L233.75 422.00L234.00 419.75L234.75 417.75L234.75 416.25L235.75 414.50L235.75 413.75L237.75 410.50L240.75 407.50L245.50 404.75L247.00 404.75ZM382.00 395.00L377.75 393.75L375.25 393.50L344.50 393.25L343.50 393.75L343.25 451.50L343.75 452.50L356.75 452.75L357.25 444.00L357.00 436.75L357.50 436.00L375.50 435.75L378.50 434.75L379.75 434.75L380.75 434.00L382.25 433.75L385.50 431.75L389.50 428.00L390.75 426.25L392.75 422.50L392.75 421.25L393.75 419.25L393.75 409.75L392.75 407.50L392.75 406.25L389.50 400.75L386.25 397.50ZM379.00 409.25L380.25 412.75L380.00 416.25L378.50 420.00L376.50 422.25L373.25 424.00L369.50 425.00L358.50 425.25L357.25 424.50L357.00 406.25L357.50 405.75L365.00 405.00L374.25 405.75L376.75 407.00ZM455.50 393.50L455.00 394.25L455.00 452.25L455.50 452.75L500.50 452.75L501.00 452.25L501.50 448.50L501.50 443.50L501.25 441.50L500.75 441.00L468.75 441.00L468.00 440.50L468.00 429.75L468.50 429.00L494.25 428.50L495.00 427.50L494.75 418.25L494.25 417.75L468.25 417.75L467.75 417.00L467.75 406.25L468.25 405.50L500.25 405.25L501.00 404.25L500.75 394.00L500.25 393.50ZM562.50 393.50L562.00 394.50L562.25 452.25L563.25 452.75L574.25 452.75L574.75 452.25L574.75 434.25L575.50 433.25L576.75 432.75L583.75 432.75L586.25 434.75L599.75 452.25L600.75 452.75L605.50 453.25L613.75 452.50L614.00 452.00L599.75 431.50L599.75 430.50L600.50 429.75L604.25 427.75L607.00 425.25L609.25 422.25L611.00 418.25L611.75 414.00L611.50 408.25L610.00 403.75L607.75 400.00L605.25 397.50L602.25 395.50L596.50 393.75L565.50 393.25ZM574.75 406.25L575.50 405.50L593.25 405.75L597.00 409.50L597.00 410.75L597.75 412.00L597.75 413.75L597.00 416.50L596.00 418.25L594.25 420.00L590.50 421.50L587.50 422.00L575.75 421.75L574.75 420.50ZM672.00 393.50L671.50 394.50L671.50 404.25L672.00 405.25L688.75 405.50L689.75 406.50L690.00 452.25L690.75 452.75L698.25 452.75L703.25 452.25L703.50 406.50L704.50 405.50L707.75 405.75L721.00 405.25L721.75 404.25L721.25 393.75L720.50 393.25ZM782.50 393.25L781.75 394.25L781.75 452.50L782.75 453.00L794.00 453.00L795.25 452.50L795.25 394.00L794.25 393.25ZM856.75 393.50L856.25 394.00L856.25 452.50L902.25 452.50L902.75 450.25L902.75 444.75L902.25 441.75L901.25 441.00L870.50 441.00L869.75 440.75L869.00 439.50L869.00 429.75L870.00 428.50L895.50 428.25L896.50 427.25L896.50 418.50L895.50 417.75L870.75 418.00L869.50 417.50L869.00 416.50L869.00 406.50L870.00 405.50L901.75 405.25L902.25 404.50L902.25 394.00L901.75 393.50L886.50 393.25ZM985.00 392.25L981.50 393.00L974.50 395.75L972.00 397.50L968.75 401.00L967.00 404.25L966.00 407.50L966.00 414.00L967.00 417.25L969.75 421.25L975.00 424.75L979.00 426.00L980.25 426.75L982.25 427.00L984.00 427.75L985.50 427.75L988.00 428.75L989.75 428.75L992.25 429.75L993.50 429.75L998.00 431.75L999.75 433.25L1000.50 434.50L1000.50 438.00L999.00 440.00L995.50 441.75L987.25 442.00L980.50 440.50L974.75 438.00L972.25 436.25L971.00 436.25L969.00 437.75L966.00 441.25L965.00 443.25L964.75 445.50L966.50 447.25L971.25 449.75L976.25 451.75L977.25 451.75L980.00 452.75L986.00 453.75L992.50 453.75L998.75 452.75L1002.00 451.75L1007.25 449.25L1010.50 446.25L1011.75 444.50L1013.75 440.50L1013.75 439.00L1014.50 436.50L1014.50 432.50L1013.75 430.25L1013.75 429.00L1013.00 428.00L1012.75 426.75L1009.50 423.00L1004.00 419.75L995.50 417.25L991.75 416.75L989.75 416.00L984.50 415.00L981.50 413.50L979.75 411.50L979.75 408.25L980.00 407.50L983.25 404.75L984.25 404.75L986.75 403.75L991.50 403.75L994.50 404.75L996.00 404.75L997.75 405.75L998.75 405.75L1005.25 409.50L1008.00 407.50L1010.75 404.50L1012.75 400.50L1012.25 399.25L1009.00 397.00L1001.25 393.50L994.00 392.00Z"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5l1.3-3.9A8 8 0 1 1 8.6 19z"/><path d="M9 9.5c.3 2 2.2 4.1 4.6 4.8l1-1.1 1.7.8-.4 1.4c-3.7.2-7.6-3.5-7.4-7.1l1.4-.4.8 1.7z" stroke-width="1.2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="1"/><path d="M8 20h8"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3.5" width="16" height="17" rx="1"/><path d="M4 9h16M4 14.5h16M10 9v11.5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <svg class="logo" viewBox="0 -2 1016 458" role="img" aria-label="DEEN Properties"><use href="#deen-logo"/></svg>
+      <span class="brand-tag">Open House RSVP</span>
+    </div>
+    <div class="top-right">
+      <span class="live off" id="live" aria-live="polite"><i></i><span id="liveText">Connecting</span></span>
+      <button class="btn-ghost" id="signInBtn" type="button">Sign in</button>
+      <div class="me" id="me" hidden>
+        <span class="me-name" id="meName"></span>
+        <button class="btn-ghost" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <nav class="wrap tabs" id="tabs" aria-label="Views" hidden>
+    <button type="button" data-view="board" class="on">Dashboard</button>
+    <button type="button" data-view="mine" id="tabMine">All guests</button>
+    <button type="button" data-view="agents" data-admin>Agents</button>
+    <button type="button" data-view="event" data-admin>Event</button>
+  </nav>
+</header>
+
+<main>
+  <!-- LIVE BOARD -->
+  <section class="stage" id="view-board" aria-label="Live board">
+    <canvas class="sand" id="sand" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="boot" id="boot">
+        <svg class="logo" viewBox="0 -2 1016 458" aria-hidden="true"><use href="#deen-logo"/></svg>
+        <p id="bootText">Loading</p>
+      </div>
+      <div class="event" id="eventBlock" hidden>
+        <div class="event-main">
+          <p class="eyebrow">Open house</p>
+          <h1 id="evName">DEEN Open House</h1>
+          <p class="ev-tag" id="evTag" hidden></p>
+          <ul class="ev-meta">
+            <li><svg aria-hidden="true"><use href="#i-cal"/></svg><span id="evDate"></span></li>
+            <li><svg aria-hidden="true"><use href="#i-clock"/></svg><span id="evTime"></span></li>
+            <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span id="evVenue"></span></li>
+          </ul>
+        </div>
+        <div class="cd" id="countdown" role="timer" hidden>
+          <p class="cd-label"><i class="cd-dot"></i><span id="cdLabel">Opens in</span></p>
+          <div class="cd-row" id="cdRow">
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdD">00</span></span><span class="cd-cap">Days</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdH">00</span></span><span class="cd-cap">Hours</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdM">00</span></span><span class="cd-cap">Minutes</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdS">00</span></span><span class="cd-cap">Seconds</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="welcome" id="welcome" hidden>
+        <p id="welcomeText">Agents: sign in with your name and the ID the CEO gave you, then add every guest you invite.</p>
+        <button class="btn btn-light" type="button" id="welcomeSignIn">Sign in</button>
+      </div>
+      <div id="boardBody" hidden>
+        <div class="hero">
+          <div class="hero-num">
+            <span class="big" id="kConfirmed">0</span>
+            <span class="hero-label">Confirmed guests</span>
+            <span class="hero-cap" id="capText"></span>
+          </div>
+          <section class="today" aria-labelledby="todayTitle">
+            <p class="today-title" id="todayTitle">Today</p>
+            <dl class="today-stats">
+              <div><dt>New RSVPs</dt><dd id="kTodayNew">0</dd></div>
+              <div><dt>Confirmed guests</dt><dd id="kTodayConfirmed">0</dd></div>
+              <div><dt>Arrived</dt><dd id="kTodayArrived">0</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <dl class="stats">
+          <div><dt>RSVPs</dt><dd id="kParties">0</dd><small id="kPartiesNote">guest parties</small></div>
+          <div><dt>Maybe</dt><dd id="kMaybe">0</dd><small>people</small></div>
+          <div><dt>Awaiting reply</dt><dd id="kAwaiting">0</dd><small>RSVPs</small></div>
+          <div><dt>Declined</dt><dd id="kDeclined">0</dd><small>RSVPs</small></div>
+          <div><dt>Arrived</dt><dd id="kArrived">0</dd><small id="kArrivedNote">people checked in</small></div>
+        </dl>
+
+        <section class="arrival-chart" id="arrivalChart" hidden aria-label="Expected arrival">
+          <h2>Expected arrival <small>confirmed guests by time</small></h2>
+          <ul class="arrival-list" id="arrivalList"></ul>
+        </section>
+
+        <div class="board-grid">
+          <section class="rank" aria-labelledby="hLeader">
+            <div class="rank-head">
+              <h2 id="hLeader">Agent ranking <small>by confirmed guests, then RSVPs</small></h2>
+              <p class="tier-key"><span class="tk tk-elite">Elite · top 25%</span><span class="tk tk-core">Core · middle 50%</span><span class="tk tk-growth">Growth · bottom 25%</span></p>
+            </div>
+            <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+            <div class="podium" id="podium"></div>
+            <ol class="ranks" id="ranks"></ol>
+          </section>
+          <section aria-labelledby="hFeed">
+            <h2 id="hFeed">Latest <small>newest first</small></h2>
+            <ul class="feed" id="feed"></ul>
+          </section>
+        </div>
+
+        <footer class="stage-foot">
+          <span id="updated">Connecting</span>
+          <span class="grow"></span>
+          <button class="btn-ghost tv-hide" type="button" id="tvBtn"><svg aria-hidden="true"><use href="#i-tv"/></svg><span>TV mode</span></button>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- MY RSVPs / ALL GUESTS -->
+  <section class="paper" id="view-mine" aria-label="RSVPs" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow mine-eyebrow"><span id="mineAvatar"></span><span id="mineEyebrow"></span></p>
+          <h2 id="mineTitle">My RSVPs</h2>
+          <p class="event-line" id="mineEvent"></p>
+        </div>
+        <button class="btn" type="button" id="addBtn"><svg aria-hidden="true"><use href="#i-plus"/></svg>Add RSVP</button>
+      </div>
+      <p class="closed-note" id="closedNote" hidden>RSVPs are closed by the manager. You can still check guests in when they arrive.</p>
+      <dl class="mystats" id="myStats"></dl>
+      <div class="filters">
+        <div class="chips" id="chips" role="group" aria-label="Filter by status"></div>
+        <select class="inline" id="eventFilter" aria-label="Filter by event" hidden></select>
+        <select class="inline" id="agentFilter" aria-label="Filter by agent" hidden></select>
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search name, number or note" aria-label="Search guests"></label>
+      </div>
+      <ul class="list" id="list"></ul>
+      <div class="empty" id="listEmpty" hidden></div>
+    </div>
+  </section>
+
+  <!-- MANAGER: AGENTS -->
+  <section class="paper" id="view-agents" aria-label="Agents" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow">CEO</p>
+          <h2>Agents</h2>
+        </div>
+        <button class="btn" type="button" id="addAgentBtn"><svg aria-hidden="true"><use href="#i-plus"/></svg>Add agent</button>
+      </div>
+      <p class="lede">Only agents on this list can sign in. They tap their name and type their ID, then see and edit only their own guests. You can also type names and IDs straight into the Agents tab of the Google Sheet.</p>
+      <ul class="list" id="agentList"></ul>
+      <div class="empty" id="agentsEmpty" hidden>
+        <h3>No agents yet</h3>
+        <p>Add each agent's name and an ID, then send them the app link and their ID on WhatsApp.</p>
+        <button class="btn" type="button" data-add-agent><svg aria-hidden="true"><use href="#i-plus"/></svg>Add the first agent</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANAGER: EVENT -->
+  <section class="paper" id="view-event" aria-label="Event settings" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow">CEO</p>
+          <h2>Event</h2>
+        </div>
+      </div>
+      <form id="eventForm" novalidate>
+        <div class="form-grid">
+          <label class="field span"><span>Event name</span><input type="text" id="eName" maxlength="60" required></label>
+          <label class="field span"><span>Line under the title</span><input type="text" id="eTagline" maxlength="80" placeholder="e.g. Exclusive preview of our new launch"><small>Optional. Shown on the live board.</small></label>
+          <div class="field span">
+            <span class="field-label">Date</span>
+            <label class="check"><input type="checkbox" id="eDaily">Open every day: the date changes by itself each day</label>
+            <input type="date" id="eDate" aria-label="Event date or first day">
+            <small>Every day ticked: this is the first day (leave empty to start today). Not ticked: the one event date.</small>
+          </div>
+          <label class="field"><span>Opens</span><input type="time" id="eStart" step="900"></label>
+          <label class="field"><span>Closes</span><input type="time" id="eEnd" step="900"></label>
+          <label class="field span"><span>Venue</span><input type="text" id="eVenue" maxlength="120" placeholder="e.g. Show apartment, Tower B, Business Bay"></label>
+          <div class="field">
+            <span class="field-label">RSVPs</span>
+            <div class="seg two" role="radiogroup" aria-label="RSVPs open or closed">
+              <label><input type="radio" name="eOpen" value="yes"><span>Open</span></label>
+              <label><input type="radio" name="eOpen" value="no"><span>Closed</span></label>
+            </div>
+            <small>Closed stops agents adding or editing. Check-in still works.</small>
+          </div>
+          <label class="field"><span>New CEO PIN</span><input type="password" id="ePin" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="Leave empty to keep"><small>6 to 8 digits</small></label>
+        </div>
+        <p class="form-err" id="eventErr" role="alert" hidden></p>
+        <div class="actions-row">
+          <button class="btn" type="submit" id="eventSave">Save event</button>
+          <span class="saved-note" id="eventSaved"></span>
+        </div>
+      </form>
+
+      <div class="panel">
+        <h3>Agent link</h3>
+        <p>Send it to the agents' WhatsApp group. Agents sign in with their name and ID and get two tabs: the Dashboard and My RSVPs, where they add and see only their own guests.</p>
+        <div class="copy-row">
+          <input type="text" id="appLink" readonly aria-label="Agent link">
+          <button class="btn sm" type="button" data-copy="appLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>CEO link</h3>
+        <p>For the CEO only. It opens straight to the CEO PIN and then shows all four tabs: Dashboard, All guests, Agents and Event.</p>
+        <div class="copy-row">
+          <input type="text" id="ceoLink" readonly aria-label="CEO link">
+          <button class="btn sm" type="button" data-copy="ceoLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Dashboard link</h3>
+        <p>The live dashboard without the CEO PIN: confirmed guests, today's numbers, agent leaderboard and latest activity. It never shows phone numbers or full guest names. Use it for the office TV or to share with management. Add <b>&amp;tv=1</b> at the end to open straight in TV mode.</p>
+        <div class="copy-row">
+          <input type="text" id="boardLink" readonly aria-label="Dashboard link">
+          <button class="btn sm" type="button" data-copy="boardLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+        <div class="actions-row">
+          <button type="button" class="link danger" id="newBoardKey">Make a new dashboard link</button>
+          <div class="confirm-del" id="boardKeyConfirm" hidden><span>The old dashboard link will stop working.</span><button type="button" class="btn sm" id="boardKeyYes">Make new link</button><button type="button" class="link" id="boardKeyNo">Cancel</button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Google Sheet</h3>
+        <p>Every RSVP, agent and change is stored in the Google Sheet. Open it to filter, print or download the full guest list.</p>
+        <a class="btn" id="sheetLink" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-sheet"/></svg>Open the Google Sheet</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- SIGN IN -->
+<div class="sheet" id="sheet-signin" role="dialog" aria-modal="true" aria-labelledby="signinTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="signinForm" novalidate>
+    <header class="sheet-head"><h3 id="signinTitle">Sign in</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <p class="hint" id="signinHint">Pick your name, then type the ID the CEO gave you.</p>
+      <div class="names" id="nameList" role="radiogroup" aria-label="Your name"></div>
+      <label class="field" id="pinField" hidden><span id="pinLabel">Your ID</span><input class="pin-input" type="password" id="fPin" inputmode="text" maxlength="30" autocomplete="current-password" autocapitalize="off" spellcheck="false"></label>
+      <label class="check"><input type="checkbox" id="fKeep" checked>Keep me signed in on this phone</label>
+      <p class="form-err" id="signinErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot"><span class="grow"></span><button type="button" class="link" data-close>Cancel</button><button class="btn" type="submit" id="signinGo" disabled>Sign in</button></footer>
+  </form>
+</div>
+
+<!-- ADD / EDIT RSVP -->
+<div class="sheet" id="sheet-rsvp" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="rsvpForm" novalidate>
+    <header class="sheet-head"><h3 id="rsvpTitle">Add RSVP</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <label class="field" id="agentField" hidden><span>Agent</span><select id="fAgent"></select></label>
+      <label class="field"><span>Guest name</span><input type="text" id="fName" maxlength="80" autocomplete="off" required></label>
+      <label class="field"><span>Mobile</span><input type="tel" id="fMobile" inputmode="tel" autocomplete="off" placeholder="050 123 4567 or +44 7700 900123" required></label>
+      <div class="field-row">
+        <div class="field">
+          <span class="field-label">People coming</span>
+          <div class="stepper"><button type="button" id="pMinus" aria-label="One less">&minus;</button><output id="fParty">1</output><button type="button" id="pPlus" aria-label="One more">+</button></div>
+          <small>Including the guest</small>
+        </div>
+        <label class="field"><span>Expected arrival</span><select id="fArrival"></select></label>
+      </div>
+      <div class="field">
+        <span class="field-label">Status</span>
+        <div class="seg" role="radiogroup" aria-label="Status" id="fStatus">
+          <label><input type="radio" name="status" value="Confirmed" checked><span>Confirmed</span></label>
+          <label><input type="radio" name="status" value="Maybe"><span>Maybe</span></label>
+          <label><input type="radio" name="status" value="Awaiting"><span>Awaiting</span></label>
+          <label><input type="radio" name="status" value="Declined"><span>Declined</span></label>
+        </div>
+      </div>
+      <details class="more" id="moreBox">
+        <summary>More details <small>optional</small></summary>
+        <div class="field-row">
+          <label class="field"><span>Interested in</span><select id="fInterest"></select></label>
+          <label class="field"><span>Budget</span><select id="fBudget"></select></label>
+        </div>
+        <label class="field"><span>Notes</span><textarea id="fNotes" maxlength="500" rows="3" placeholder="e.g. Coming with his broker, wants sea view"></textarea></label>
+      </details>
+      <p class="form-err" id="rsvpErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot">
+      <button type="button" class="link danger" id="rsvpDelete" hidden>Remove RSVP</button>
+      <div class="confirm-del" id="delConfirm" hidden><span>Remove this guest?</span><button type="button" class="btn sm" id="delYes">Remove</button><button type="button" class="link" id="delNo">Keep</button></div>
+      <span class="grow"></span>
+      <button type="button" class="link" data-close>Cancel</button>
+      <button class="btn" type="submit" id="rsvpSave">Save RSVP</button>
+    </footer>
+  </form>
+</div>
+
+<!-- ADD / EDIT AGENT -->
+<div class="sheet" id="sheet-agent" role="dialog" aria-modal="true" aria-labelledby="agentTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="agentForm" novalidate>
+    <header class="sheet-head"><h3 id="agentTitle">Add agent</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <label class="field"><span>Name</span><input type="text" id="aName" maxlength="40" autocomplete="off" required></label>
+      <div class="field">
+        <span class="field-label">ID</span>
+        <div class="copy-row"><input type="text" id="aCode" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="ID"><button class="btn sm" type="button" id="aGen">Make one</button></div>
+        <small>At least 3 characters, e.g. their employee number or 4821. The agent signs in by tapping their name and typing this ID.</small>
+      </div>
+      <div class="field" id="aPhotoField" hidden>
+        <span class="field-label">Photo</span>
+        <div class="photo-row">
+          <span id="aPhotoPreview"></span>
+          <label class="btn sm" for="aPhotoFile">Upload photo</label>
+          <input type="file" id="aPhotoFile" accept="image/*" hidden>
+          <button type="button" class="link danger" id="aPhotoRemove" hidden>Remove photo</button>
+        </div>
+        <small>Shown round on the dashboard ranking. A head-and-shoulders photo works best. Saved straight away.</small>
+      </div>
+      <p class="form-err" id="agentErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot">
+      <button type="button" class="link danger" id="agentDelete" hidden>Remove agent</button>
+      <div class="confirm-del" id="agentDelConfirm" hidden><span>Remove this agent? Their guests stay.</span><button type="button" class="btn sm" id="agentDelYes">Remove</button><button type="button" class="link" id="agentDelNo">Keep</button></div>
+      <span class="grow"></span>
+      <button type="button" class="link" data-close>Cancel</button>
+      <button class="btn" type="submit" id="agentSave">Save agent</button>
+    </footer>
+  </form>
+</div>
+
+<div class="celebrate" id="celebrate" aria-live="polite" hidden>
+  <div class="celebrate-card">
+    <div class="celebrate-av" id="celebrateAv"></div>
+    <p class="celebrate-kicker">New leader</p>
+    <p class="celebrate-name" id="celebrateName"></p>
+    <p class="celebrate-sub" id="celebrateSub"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>(function () {
+/* Core: server calls, live sync loop, event header, shared helpers. The dashboard is drawn in app-board.js. */
+'use strict';
+
+const STATUSES = ['Confirmed', 'Maybe', 'Awaiting', 'Declined'];
+const INTERESTS = ['Studio / 1 BR', '2 BR', '3 BR+', 'Villa / Townhouse', 'Investment', 'Commercial', 'Not sure yet'];
+const BUDGETS = ['Under AED 1M', 'AED 1M - 2M', 'AED 2M - 5M', 'AED 5M+'];
+const POLL_VISIBLE = 8000;
+const POLL_HIDDEN = 30000;
+const TZ = 'Asia/Dubai';
+const AUTH_KEY = 'deen-openhouse-auth';
+// Set by build.mjs for the copy hosted outside Google; empty when Apps Script serves the page itself.
+const API_URL = "https://script.google.com/macros/s/AKfycbxxSuiDPEaALUZ6BN2KvW1ar9XHsG6OS95ZTi4guEIxa5UQBdlJHpYdYuIcUIz964Q/exec";
+const PAGE_URL = API_URL ? location.origin + location.pathname : '';
+const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const S = {
+  event: null, agentNames: [], board: null, mine: null, auth: null, view: 'board', boardKey: '', boardKeyBad: false, ceoLink: false,
+  boardV: '', mineV: '', lastOk: 0, failures: 0, timer: 0, syncing: false, epoch: 0, skew: 0,
+  feedKeys: null, shownDay: '', photos: {}, photosV: '', prevRanks: null, leaderId: '', prevConfirmed: null,
+  filter: 'all', agentFilter: '', eventFilter: '', query: '',
+  editing: null, editingAgent: null, party: 1, pick: null, eventDirty: false, openSheet: null
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+const firstName = (name) => String(name || '').trim().split(/\s+/)[0] || '';
+const isAdmin = () => !!(S.mine && S.mine.who && S.mine.who.role === 'admin');
+/** Anyone signed in (the CEO or an agent), or anyone who opened a valid dashboard link. */
+const canSeeBoard = () => !!S.board && (!!(S.mine && S.mine.who) || (!!S.boardKey && !S.boardKeyBad));
+
+const store = {
+  get(k) {
+    try { return JSON.parse(localStorage.getItem(k) || sessionStorage.getItem(k) || 'null'); } catch (e) { return null; }
+  },
+  set(k, v, keep) {
+    try {
+      (keep ? localStorage : sessionStorage).setItem(k, JSON.stringify(v));
+      (keep ? sessionStorage : localStorage).removeItem(k);
+    } catch (e) { /* private mode: stay signed in for this visit only */ }
+  },
+  kept(k) {
+    try { return !!localStorage.getItem(k); } catch (e) { return false; }
+  },
+  del(k) {
+    try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch (e) { /* nothing stored */ }
+  }
+};
+
+/* ---------- server ---------- */
+
+const offlineMsg = (err) => (navigator.onLine === false
+  ? 'You are offline. Check your connection and try again.'
+  : 'Could not reach the server. Try again in a moment.' + (err && err.message ? ' (' + err.message + ')' : ''));
+
+function call(action, payload) {
+  if (window.google && google.script && google.script.run) return callGas(action, payload);
+  if (!API_URL) return Promise.reject(new Error('Open this page from the app link.'));
+  // text/plain keeps this a "simple" request: no preflight, and no Google cookies are sent
+  return fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, payload }) })
+    .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); },
+      (err) => { throw new Error(offlineMsg(err)); })
+    .then((res) => {
+      if (!res) throw new Error('No answer from the server. Try again.');
+      if (!res.ok) throw new Error(res.error);
+      return res.data;
+    });
+}
+
+function callGas(action, payload) {
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler((res) => {
+        if (!res) reject(new Error('No answer from the server. Try again.'));
+        else if (res.ok) resolve(res.data);
+        else reject(new Error(res.error));
+      })
+      .withFailureHandler((err) => reject(new Error(offlineMsg(err))))
+      .api(action, payload);
+  });
+}
+
+/** Applies the public part every answer carries: event details, sign-in names, server clock. */
+function applyPublic(res) {
+  if (res.now) S.skew = res.now - Date.now();
+  if (res.agentNames) {
+    S.agentNames = res.agentNames;
+    if (S.openSheet === 'sheet-signin') renderNames();
+  }
+  if (res.event) applyEvent(res.event);
+}
+
+/** Runs a write, then applies the fresh lists it returns. */
+async function write(action, payload) {
+  const res = await call(action, Object.assign({ auth: S.auth }, payload));
+  S.epoch++;
+  if (res.auth) {
+    S.auth = res.auth;
+    store.set(AUTH_KEY, res.auth, store.kept(AUTH_KEY));
+  }
+  applyPublic(res);
+  applyBoard(res.board);
+  applyMine(res.mine);
+  return res;
+}
+
+async function sync() {
+  if (S.syncing) return;
+  S.syncing = true;
+  clearTimeout(S.timer);
+  const epoch = S.epoch;
+  try {
+    const res = await call('sync', { boardV: S.boardV, mineV: S.mineV, auth: S.auth, boardKey: S.boardKey });
+    S.lastOk = Date.now();
+    S.failures = 0;
+    setLive(true);
+    if (epoch === S.epoch) {
+      if (res.boardKeyBad !== S.boardKeyBad) {
+        S.boardKeyBad = !!res.boardKeyBad;
+        if (S.boardKeyBad && !isAdmin()) { S.board = null; S.boardV = ''; }
+        if (S.mine || S.event) applyAuthUi();
+      }
+      applyPublic(res);
+      if (res.signedOut) signOut(res.signedOut);
+      else {
+        applyBoard(res.board);
+        applyMine(res.mine);
+      }
+      if (res.photosV && res.photosV !== S.photosV) loadPhotos();
+    }
+  } catch (e) {
+    S.failures++;
+    setLive(false);
+    if (!S.event) $('bootText').textContent = (e && e.message) ? e.message : 'Can\'t reach the server yet. Retrying...';
+  } finally {
+    S.syncing = false;
+    schedule();
+  }
+}
+
+function schedule() {
+  clearTimeout(S.timer);
+  const base = document.visibilityState === 'hidden' ? POLL_HIDDEN : POLL_VISIBLE;
+  const wait = S.failures ? Math.min(60000, base * Math.pow(1.6, S.failures)) : base;
+  S.timer = setTimeout(sync, wait);
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') sync();
+});
+
+function setLive(ok) {
+  $('live').classList.toggle('off', !ok);
+  $('liveText').textContent = ok ? 'Live' : (S.event ? 'Reconnecting' : 'Connecting');
+}
+
+/* ---------- time + formatting (all event times are Dubai time) ---------- */
+
+const now = () => Date.now() + S.skew;
+
+/** Today in Dubai as YYYY-MM-DD, from the server's clock so a wrong phone clock doesn't matter. */
+const todayDubai = () => new Date(now()).toLocaleDateString('en-CA', { timeZone: TZ });
+
+/** The date the page shows: every day = today (or the first day while it's still ahead); otherwise the fixed date. */
+const eventDate = (ev) => {
+  if (!ev.daily) return ev.date;
+  const today = todayDubai();
+  return ev.date && ev.date > today ? ev.date : today;
+};
+
+function eventWindow(ev) {
+  const date = ev && eventDate(ev);
+  if (!date) return null;
+  const start = new Date(date + 'T' + ev.start + ':00' + (ev.offset || '+04:00')).getTime();
+  let end = new Date(date + 'T' + ev.end + ':00' + (ev.offset || '+04:00')).getTime();
+  if (end <= start) end += 86400000;
+  return { start, end };
+}
+
+function fmt12(hhmm) {
+  if (!hhmm) return '';
+  const p = hhmm.split(':').map(Number);
+  const h = p[0] % 12 || 12;
+  return h + ':' + String(p[1]).padStart(2, '0') + ' ' + (p[0] >= 12 ? 'PM' : 'AM');
+}
+
+function fmtLongDate(ymd) {
+  return new Date(ymd + 'T12:00:00+04:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: TZ });
+}
+
+function fmtShortDate(ymd) {
+  return new Date(ymd + 'T12:00:00+04:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ });
+}
+
+function fmtClock(ms) {
+  return new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: TZ });
+}
+
+function ago(ms) {
+  const s = Math.max(0, Math.round((now() - ms) / 1000));
+  if (s < 45) return 'now';
+  if (s < 3600) return Math.max(1, Math.round(s / 60)) + 'm';
+  if (s < 86400) return Math.floor(s / 3600) + 'h';
+  return Math.floor(s / 86400) + 'd';
+}
+
+function fmtMobile(m) {
+  const d = String(m || '').replace(/\D/g, '');
+  const x = d.match(/^971(5\d)(\d{3})(\d{4})$/) || d.match(/^971(\d)(\d{3})(\d{4})$/);
+  if (x) return '+971 ' + x[1] + ' ' + x[2] + ' ' + x[3];
+  return d ? '+' + d : '';
+}
+
+/* ---------- event header (everyone) ---------- */
+
+function applyEvent(ev) {
+  S.event = ev;
+  $('boot').hidden = true;
+  $('eventBlock').hidden = false;
+  $('evName').textContent = ev.name;
+  $('evTag').textContent = ev.tagline || '';
+  $('evTag').hidden = !ev.tagline;
+  document.title = ev.name + ' · RSVP';
+  renderEventText();
+  if (S.board) renderBoard();
+  tick();
+}
+
+/** Date, hours and venue lines. Re-run at midnight for an every-day open house. */
+function renderEventText() {
+  const ev = S.event;
+  const date = eventDate(ev);
+  const hours = fmt12(ev.start) + ' to ' + fmt12(ev.end);
+  S.shownDay = todayDubai();
+  setMeta('evDate', date ? fmtLongDate(date) : 'Date to be announced', !date);
+  const fromLater = ev.daily && ev.date && ev.date > S.shownDay;
+  setMeta('evTime', hours + (ev.daily ? ' · open every day' + (fromLater ? ' from ' + fmtShortDate(ev.date) : '') : ''), false);
+  setMeta('evVenue', ev.venue || 'Venue to be announced', !ev.venue);
+  $('mineEvent').textContent = [ev.name, date ? fmtShortDate(date) : 'date to be announced', hours, ev.venue].filter(Boolean).join(' · ');
+  $('todayTitle').textContent = 'Today · ' + fmtShortDate(S.shownDay);
+}
+
+function setMeta(id, text, muted) {
+  const n = $(id);
+  n.textContent = text;
+  n.classList.toggle('muted', muted);
+}
+
+/* Dashboard drawing (countdown, ranking, feed) lives in app-board.js. */
+
+/* ---------- toast, dialogs, buttons ---------- */
+
+function toast(html, ms) {
+  const t = $('toast');
+  t.innerHTML = html;
+  t.hidden = false;
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => { t.hidden = true; }, ms || 4000);
+}
+
+function openSheet(id) {
+  if (S.openSheet && S.openSheet !== id) closeSheet(S.openSheet);
+  $(id).hidden = false;
+  S.openSheet = id;
+  document.body.style.overflow = 'hidden';
+  const first = $(id).querySelector('input:not([type=hidden]):not([type=radio]):not([type=checkbox]), select');
+  if (first && window.innerWidth > 640) setTimeout(() => first.focus(), 60);
+}
+
+function closeSheet(id) {
+  $(id).hidden = true;
+  if (S.openSheet === id) S.openSheet = null;
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('click', (e) => {
+  const c = e.target.closest('[data-close]');
+  if (c) closeSheet(c.closest('.sheet').id);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (S.openSheet) closeSheet(S.openSheet);
+  else if (document.body.classList.contains('tv')) setTv(false);
+});
+
+function busy(btn, on, label) {
+  if (on) {
+    btn.dataset.html = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = label || 'Saving';
+  } else {
+    btn.disabled = false;
+    if (btn.dataset.html) btn.innerHTML = btn.dataset.html;
+  }
+}
+
+function showErr(id, msg) {
+  const n = $(id);
+  n.textContent = msg || '';
+  n.hidden = !msg;
+}
+
+/* ---------- TV mode (CEO or dashboard link): dashboard only, full screen, screen kept awake ---------- */
+
+let wakeLock = null;
+function setTv(on) {
+  if (on && !canSeeBoard()) return;
+  document.body.classList.toggle('tv', on);
+  if (on) {
+    setView('board');
+    try { const r = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (r) r.catch(() => {}); } catch (e) { /* not allowed in this frame */ }
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then((l) => { wakeLock = l; }).catch(() => {}); } catch (e) { /* optional */ }
+    toast('TV mode. Press Esc or tap the logo to exit.', 3500);
+  } else {
+    try { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); } catch (e) { /* ignore */ }
+    if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  }
+}
+
+/* Silver sand: a full-screen three.js field of shining silver grains behind the live board, built the
+   same way as the Argonaut landing ("The Voyage"). It opens with the sand gathering into the DEEN
+   Properties logo while the board waits dimmed; the logo then flows into the Dubai skyline and the
+   board fades in. After that the grains follow the scroll: the skyline at the top, the crown at the
+   ranking, desert dunes at the bottom. Left alone on the opening screen (and always in TV mode) the
+   sand keeps changing: skyline, DEEN logo, crown, dunes. Every change runs on ONE eased timeline:
+   the grains, the camera, the spin and the drift start together and land together. The mouse pushes
+   grains away, a confirmed guest sends a ripple through the sand and a new leader gathers it into the
+   crown. three.js loads only where it can run (WebGL, motion allowed); otherwise the stage stays black. */
+const Sand = (() => {
+  const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js';
+  const MOUSE_FORCE = 1.4;
+  const G = -9.5;                        // ground level of the skyline
+  const SPREAD = 1.3;                    // the skyline is drawn 30% wider than it is modelled
+  const MORPH = 2.8;                     // seconds for one formation to become the next
+  // left alone (or in TV mode) the sand keeps changing: shape and seconds it stays
+  const CYCLE = [['skyline', 16], ['logo', 9], ['crown', 11], ['dunes', 11]];
+  const IDLE = 8;                        // seconds without a touch, wheel, key or mouse move before the cycle starts
+  const CFG = {                          // camera position, look-at, spin (rad/s), rock, drift (slow pan)
+    skyline: { cam: [0, -3, 38], look: [0, -5.7, 0], spin: 0, rock: 0.005, drift: 1 },   // spire tip ~18% down: clear of the taller CEO header too
+    crown: { cam: [0, 5.5, 23], look: [0, 0.4, 0], spin: 0.24, rock: 0, drift: 0 },
+    logo: { cam: [0, 0.4, 21], look: [0, 0, 0], spin: 0, rock: 0.014, drift: 0 },
+    dunes: { cam: [0, 1.5, 24], look: [0, -4.5, -6], spin: 0.012, rock: 0, drift: 0 }
+  };
+  // bright silver, white, cool silver, steel, blue silver (rgb 0..1, share of grains)
+  const PALETTE = [[0.93, 0.95, 0.98, 0.32], [1, 1, 1, 0.2], [0.78, 0.82, 0.89, 0.24], [0.64, 0.68, 0.75, 0.14], [0.82, 0.88, 0.98, 0.1]];
+  const R = Math.random;
+  const TAU = Math.PI * 2;
+
+  let THREE = null, renderer, scene, cam, points, clock, colorAttr;
+  let N = 0, forms = null, fa, ta, cur, ox, oy, oz, ovx, ovy, ovz, base, tw, tp, gw, gp;
+  let current = '', mt = 1, mdur = MORPH, override = '', overrideUntil = 0, cycleIndex = 0, cycleNext = 0, lastInput = 0, dim = false;
+  let look, lookT, lookFrom, camT, camFrom, zoom = 1, ang = 0;
+  let spin = 0, spinT = 0, spinFrom = 0, rock = 0, rockT = 0, rockFrom = 0, drift = 0, driftT = 0, driftFrom = 0;
+  let mouse, m3, m3t, ray, plane, tmpV;
+  let raf = 0, time = 0, failed = false, loading = false, intro = false;
+
+  /* ---------- formations ---------- */
+
+  const dune = (x, z) => 0.9 * Math.sin(x * 0.18 + z * 0.35) + 0.6 * Math.sin(x * 0.41 - z * 0.23 + 1.3) + 0.3 * Math.sin(x * 0.93 + z * 0.8);
+  const sphere = (rad) => {
+    const u = R() * 2 - 1, a = R() * TAU, s = Math.sqrt(1 - u * u), rr = rad * Math.cbrt(R());
+    return [Math.cos(a) * s * rr, u * rr, Math.sin(a) * s * rr];
+  };
+
+  // x, z, width, depth, height, kind (0 box, 1 sloped roof like Emirates Towers, 2 twisting like Cayan)
+  const TOWERS = [
+    [-20.5, -6, 2.6, 2.0, 5.1, 0], [-17.4, -4, 1.7, 1.7, 7.4, 0], [-14.7, -5.2, 1.5, 1.5, 9.5, 0],
+    [-11.9, -3.6, 2.2, 1.6, 5.9, 0], [-8.7, -2.6, 1.5, 1.5, 8.3, 1], [-6.6, -2.9, 1.3, 1.3, 6.9, 1],
+    [-3.7, -5.6, 2.0, 2.0, 4.8, 0], [5.7, -2.1, 1.5, 1.5, 8.7, 2], [8.5, -4.1, 2.4, 1.8, 5.5, 0],
+    [11.3, -2.6, 1.6, 1.6, 7.5, 0], [14.1, -5.1, 2.0, 2.0, 5.1, 0]
+  ];
+  const towerArea = TOWERS.map((t) => 2 * (t[2] + t[3]) * t[4] + t[2] * t[3]);
+  const towerTotal = towerArea.reduce((s, a) => s + a, 0);
+
+  function towerPoint() {
+    let pick = R() * towerTotal, i = 0;
+    while (pick > towerArea[i]) { pick -= towerArea[i]; i++; }
+    const [cx, cz, w, d, h, kind] = TOWERS[i];
+    const faces = [w * h, w * h, d * h, d * h, w * d];
+    let f = 0, r = R() * (faces[0] + faces[1] + faces[2] + faces[3] + faces[4]);
+    while (r > faces[f]) { r -= faces[f]; f++; }
+    const u = R() - 0.5;
+    let x, y, z;
+    if (f < 2) { x = u * w; z = (f ? 0.5 : -0.5) * d; y = R() * h; }
+    else if (f < 4) { z = u * d; x = (f === 3 ? 0.5 : -0.5) * w; y = R() * h; }
+    else { x = u * w; z = (R() - 0.5) * d; y = h; }
+    if (kind === 1) { const roof = h - (x / w + 0.5) * 1.8; if (y > roof) y = roof; }
+    if (R() < 0.72) y = Math.floor(y / 0.32) * 0.32;                 // floor lines
+    if (kind === 2) { const a = (y / h) * 1.7, c = Math.cos(a), s = Math.sin(a), nx = x * c - z * s; z = x * s + z * c; x = nx; }
+    return [cx + x, G + y, cz + z];
+  }
+
+  function burjPoint() {                                              // Burj Khalifa: stepped, three wings, spire
+    const h = Math.pow(R(), 0.8), H = 15.5;
+    let r;
+    if (h > 0.86) r = 0.07 + (1 - h) * 0.25;
+    else r = 2.1 * (h < 0.22 ? 1 : h < 0.4 ? 0.8 : h < 0.56 ? 0.64 : h < 0.7 ? 0.5 : h < 0.8 ? 0.38 : 0.27) * (1 - h * 0.35);
+    const a = R() * TAU, lobe = 0.7 + 0.3 * Math.abs(Math.cos(1.5 * a));
+    let y = h * H;
+    if (h < 0.86 && R() < 0.7) y = Math.floor(y / 0.3) * 0.3;
+    return [1.2 + Math.cos(a) * r * lobe, G + y, -3.2 + Math.sin(a) * r * lobe];
+  }
+
+  function sailPoint() {                                              // Burj Al Arab
+    const mast = 20.3, H = 8.4, v = R(), u = R();
+    const front = mast - 3.6 * Math.pow(Math.sin((1 - v) * Math.PI / 2), 0.85);
+    let x = mast + (front - mast) * u, y = v * H;
+    if (R() < 0.15) { x = mast; y = R() * (H + 1.2); }
+    return [x, G + y, -3.4 + (R() - 0.5) * 0.7 * (1 - u * 0.5)];
+  }
+
+  function framePoint() {                                             // Dubai Frame
+    const w = 3.0, h = 6.2, t = 0.42, s = R();
+    let x, y;
+    if (s < 0.38) { x = -w / 2 + R() * t; y = R() * h; }
+    else if (s < 0.76) { x = w / 2 - R() * t; y = R() * h; }
+    else if (s < 0.9) { x = (R() - 0.5) * w; y = h - R() * t; }
+    else { x = (R() - 0.5) * w; y = R() * t; }
+    return [-24.6 + x, G + y, -7 + (R() - 0.5) * 0.5];
+  }
+
+  function skylinePoint() {
+    const r = R();
+    let p;
+    if (r < 0.12) { const x = (R() * 2 - 1) * 30, z = -18 + R() * 24; p = [x, G - 0.3 + dune(x, z) * 0.5, z]; }
+    else if (r < 0.34) p = burjPoint();
+    else if (r < 0.78) p = towerPoint();
+    else if (r < 0.87) p = sailPoint();
+    else if (r < 0.9) p = framePoint();
+    else if (r < 0.95) p = [(R() * 2 - 1) * 30, G + 3 + R() * 18, -26 + R() * 30];
+    else p = [(R() * 2 - 1) * 28, G + Math.pow(R(), 2) * 2.4, -14 + R() * 20];
+    p[0] *= SPREAD;
+    return p;
+  }
+
+  function crownPoint() {
+    const r = R(), RAD = 6.2;
+    if (r < 0.32) {
+      const a = R() * TAU;
+      let y = -2.6 + R() * 2.2;
+      if (R() < 0.4) y = R() < 0.5 ? -2.6 : -0.4;                    // bright rims
+      return [Math.cos(a) * RAD, y, Math.sin(a) * RAD];
+    }
+    if (r < 0.66) {                                                   // five points
+      const ak = ((R() * 5) | 0) * TAU / 5 + Math.PI / 2, v = Math.pow(R(), 0.8);
+      const a = ak + (R() - 0.5) * 0.9 * (1 - v), rad = RAD * (1 + 0.05 * Math.sin(v * Math.PI));
+      return [Math.cos(a) * rad, -0.4 + v * 4.8, Math.sin(a) * rad];
+    }
+    if (r < 0.74) {                                                   // orbs on the tips
+      const ak = ((R() * 5) | 0) * TAU / 5 + Math.PI / 2, p = sphere(0.5);
+      return [Math.cos(ak) * RAD + p[0], 4.75 + p[1], Math.sin(ak) * RAD + p[2]];
+    }
+    if (r < 0.8) {                                                    // jewels on the band
+      const ak = ((R() * 5) | 0) * TAU / 5 + Math.PI / 2 + TAU / 10, p = sphere(0.38);
+      return [Math.cos(ak) * (RAD + 0.1) + p[0], -1.5 + p[1], Math.sin(ak) * (RAD + 0.1) + p[2]];
+    }
+    const a = R() * TAU, rad = 8 + R() * 5;                           // halo of dust
+    return [Math.cos(a) * rad, (R() - 0.5) * 2.2 - 1, Math.sin(a) * rad];
+  }
+
+  function dunePoint() {
+    const x = (R() * 2 - 1) * 34, z = -30 + R() * 38;
+    const y = -6.5 + dune(x * 0.8, z * 0.8) * 1.6 + Math.sin(x * 2.1 + z * 0.4) * 0.06;
+    return R() < 0.85 ? [x, y, z] : [x, y + 0.6 + Math.pow(R(), 2) * 3.5, z];   // sand blowing off the crests
+  }
+
+  /** The DEEN logo, sampled from the traced artwork on the page (never retyped in a font). */
+  function logoPixels() {
+    const path = document.querySelector('#deen-logo path');
+    if (!path || !window.Path2D) return null;
+    const W = 640, H = 290;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    g.scale(W / 1016, H / 460);
+    g.translate(0, 2);
+    g.fill(new Path2D(path.getAttribute('d')), 'evenodd');
+    const px = g.getImageData(0, 0, W, H).data;
+    const pts = [];
+    for (let y = 0; y < H; y += 2) {
+      const copies = y > H * 0.8 ? 3 : 1;                             // the small PROPERTIES line gets 3x the grains so it reads
+      for (let x = 0; x < W; x += 2) {
+        if (px[(y * W + x) * 4 + 3] > 120) for (let c = 0; c < copies; c++) pts.push(x / W - 0.5, 0.5 - y / H);
+      }
+    }
+    return pts.length > 40 ? { pts, aspect: H / W } : null;
+  }
+
+  function genForms(n) {
+    const out = { skyline: new Float32Array(n * 3), crown: new Float32Array(n * 3), logo: new Float32Array(n * 3), dunes: new Float32Array(n * 3) };
+    const logo = logoPixels();
+    for (let i = 0; i < n; i++) {
+      const j = i * 3;
+      out.skyline.set(skylinePoint(), j);
+      out.crown.set(crownPoint(), j);
+      out.dunes.set(dunePoint(), j);
+      if (logo && R() < 0.9) {
+        const k = ((R() * logo.pts.length / 2) | 0) * 2;
+        out.logo[j] = logo.pts[k] * 24 + (R() - 0.5) * 0.08;
+        out.logo[j + 1] = logo.pts[k + 1] * 24 * logo.aspect;
+        out.logo[j + 2] = (R() - 0.5) * 0.7;
+      } else {
+        const a = R() * TAU, rad = 13 + R() * 5;                      // dust ring around the logo
+        out.logo[j] = Math.cos(a) * rad; out.logo[j + 1] = Math.sin(a) * rad * 0.45; out.logo[j + 2] = (R() - 0.5) * 3;
+      }
+    }
+    return out;
+  }
+
+  /* ---------- scene ---------- */
+
+  function dotTexture() {                                             // a bright core with a soft halo: a shining grain
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = 64;
+    const g = cv.getContext('2d');
+    const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.18, 'rgba(255,255,255,0.95)');
+    grad.addColorStop(0.42, 'rgba(255,255,255,0.32)');
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(cv);
+  }
+
+  function build() {
+    const small = Math.min(innerWidth, innerHeight) < 700;
+    N = small ? 4500 : 12000;
+    forms = genForms(N);
+    cur = new Float32Array(N * 3);
+    fa = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {                                     // start as a loose cloud of dust
+      const p = sphere(34);
+      fa[i * 3] = p[0]; fa[i * 3 + 1] = p[1] * 0.6; fa[i * 3 + 2] = p[2] * 0.5;
+    }
+    cur.set(fa);
+    ox = new Float32Array(N); oy = new Float32Array(N); oz = new Float32Array(N);
+    ovx = new Float32Array(N); ovy = new Float32Array(N); ovz = new Float32Array(N);
+    base = new Float32Array(N * 3);
+    tw = new Float32Array(N); tp = new Float32Array(N); gw = new Float32Array(N); gp = new Float32Array(N);
+    for (let i = 0; i < N; i++) {
+      let r = R(), k = 0;
+      while (k < PALETTE.length - 1 && r > PALETTE[k][3]) { r -= PALETTE[k][3]; k++; }
+      const c = PALETTE[k], b = 0.82 + R() * 0.18;
+      base[i * 3] = c[0] * b; base[i * 3 + 1] = c[1] * b; base[i * 3 + 2] = c[2] * b;
+      tw[i] = 0.6 + R() * 1.8; tp[i] = R() * TAU;                     // slow shimmer
+      gw[i] = 0.35 + R() * 1.1; gp[i] = R() * TAU;                    // rare bright glint
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(fa), 3));
+    colorAttr = new THREE.BufferAttribute(new Float32Array(base), 3);
+    geo.setAttribute('color', colorAttr);
+    const dot = dotTexture();
+    const mat = new THREE.PointsMaterial({
+      size: small ? 0.28 : 0.27, map: dot, vertexColors: true, transparent: true, opacity: 1,
+      depthWrite: false, sizeAttenuation: true, blending: THREE.AdditiveBlending
+    });
+    points = new THREE.Points(geo, mat);
+    // the same grains again, large and faint: the soft shine around them
+    const glow = new THREE.Points(geo, new THREE.PointsMaterial({
+      size: small ? 0.95 : 0.9, map: dot, vertexColors: true, transparent: true, opacity: 0.1,
+      depthWrite: false, sizeAttenuation: true, blending: THREE.AdditiveBlending
+    }));
+    points.userData.size = mat.size;
+    glow.userData.size = glow.material.size;
+    points.add(glow);
+    scene.add(points);
+  }
+
+  function init() {
+    const canvas = $('sand');
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setClearColor(0x000000, 0);
+    scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 26, 78);
+    cam = new THREE.PerspectiveCamera(50, 1, 0.1, 260);
+    look = new THREE.Vector3(0, -2, 0);
+    lookT = new THREE.Vector3();
+    lookFrom = new THREE.Vector3();
+    camT = new THREE.Vector3();
+    camFrom = new THREE.Vector3();
+    cam.position.set(0, 2, 52);
+    mouse = new THREE.Vector2(-99, -99);
+    m3 = new THREE.Vector3(999, 999, 0);
+    m3t = new THREE.Vector3(999, 999, 0);
+    ray = new THREE.Raycaster();
+    plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    tmpV = new THREE.Vector3();
+    build();
+    resize();
+    clock = new THREE.Clock();
+    const opening = scrollY < 80 && !$('view-board').hidden && openWithLogo();
+    goTo(wanted(), opening ? 2.6 : 3.6);                              // the dust gathers into the logo (or the first shape)
+    addEventListener('resize', resize);
+    // any real use of the page pauses the idle cycle (a resting cursor or a re-render can fire
+    // synthetic mousemove/scroll events, so those only count when the pointer or the page actually moved)
+    const touched = () => { lastInput = time; };
+    let px = -1, py = -1, sy = scrollY;
+    addEventListener('mousemove', (e) => { if (Math.abs(e.clientX - px) + Math.abs(e.clientY - py) > 3) { px = e.clientX; py = e.clientY; touched(); } }, { passive: true });
+    addEventListener('scroll', () => { if (Math.abs(scrollY - sy) > 3) { sy = scrollY; touched(); } }, { passive: true });
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach((ev) => addEventListener(ev, touched, { passive: true }));
+    addEventListener('mousemove', (e) => mouse.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1));
+    addEventListener('touchmove', (e) => { const t = e.touches[0]; if (t) mouse.set((t.clientX / innerWidth) * 2 - 1, -(t.clientY / innerHeight) * 2 + 1); }, { passive: true });
+    document.addEventListener('mouseleave', () => { mouse.set(-99, -99); m3t.set(999, 999, 0); });
+    addEventListener('touchend', () => { mouse.set(-99, -99); m3t.set(999, 999, 0); }, { passive: true });
+  }
+
+  function camTarget(name) {
+    const c = CFG[name];
+    let z = c.cam[2] * zoom;
+    if (name === 'logo') z = Math.max(c.cam[2], 15 / (Math.tan(25 * Math.PI / 180) * cam.aspect));   // the whole logo fits any screen
+    camT.set(c.cam[0] * zoom, c.cam[1], z);
+    lookT.set(c.look[0], c.look[1], c.look[2]);
+  }
+
+  /** The opening: the dust gathers into the DEEN Properties logo while the board waits dimmed, holds,
+      then flows into the skyline as the board fades in. Any tap, key or wheel skips straight on. */
+  function openWithLogo() {
+    intro = true;
+    document.body.classList.add('sand-intro');
+    override = 'logo';
+    overrideUntil = time + 2.6 + 2.2;                                 // gather, then hold
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach((ev) => addEventListener(ev, endIntro, { once: true, passive: true }));
+    return true;
+  }
+
+  function endIntro() {
+    if (!intro) return;
+    intro = false;
+    document.body.classList.remove('sand-intro');
+    if (override === 'logo') overrideUntil = time;
+  }
+
+  function resize() {
+    if (!renderer) return;
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h, false);
+    cam.aspect = w / h;
+    zoom = Math.pow(Math.max(1, 1.45 / cam.aspect), 0.75);           // portrait screens step back to fit
+    cam.updateProjectionMatrix();
+    scene.fog.near = 26 * zoom;                                       // ...so the haze and the grain size step back too
+    scene.fog.far = 78 * zoom;
+    const grow = Math.pow(zoom, 0.7);
+    points.material.size = points.userData.size * grow;
+    points.children[0].material.size = points.children[0].userData.size * grow;
+    if (current) camTarget(current);
+  }
+
+  /** Start the next formation: everything eases from where it is now to the new shape on one timeline. */
+  function goTo(name, dur) {
+    if (!forms || name === current) return;
+    if (current) fa.set(cur);
+    ta = forms[name];
+    current = name;
+    mt = 0;
+    mdur = dur || MORPH;
+    ang = 0;
+    camFrom.copy(cam.position);
+    lookFrom.copy(look);
+    spinFrom = spin; rockFrom = rock; driftFrom = drift;
+    const c = CFG[name];
+    spinT = c.spin; rockT = c.rock; driftT = c.drift;
+    camTarget(name);
+  }
+
+  /** Which shape the page wants now: a celebration, the idle cycle (TV mode, or nobody touching the
+      opening screen), or the scroll position: skyline at the top, crown at the ranking, dunes below. */
+  function wanted() {
+    if (override && time < overrideUntil) return override;
+    if (intro) endIntro();
+    override = '';
+    const doc = document.documentElement;
+    const p = Math.min(1, Math.max(0, scrollY / Math.max(1, doc.scrollHeight - innerHeight)));
+    if (document.body.classList.contains('tv') || (p < 0.32 && time - lastInput > IDLE)) {
+      if (time > cycleNext) {
+        cycleIndex = cycleNext ? (cycleIndex + 1) % CYCLE.length : 0;
+        cycleNext = time + CYCLE[cycleIndex][1];
+      }
+      return CYCLE[cycleIndex][0];
+    }
+    cycleNext = 0;                                                    // someone is using it: follow the scroll, restart the cycle later
+    return p < 0.32 ? 'skyline' : p < 0.7 ? 'crown' : 'dunes';
+  }
+
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);   // cubic in-out
+
+  function tick() {
+    raf = requestAnimationFrame(tick);
+    const dt = Math.min(clock.getDelta(), 0.05);
+    time += dt;
+    const want = wanted();
+    if (want !== current && mt > 0.2) goTo(want);
+    if (mt < 1) mt = Math.min(1, mt + dt / mdur);
+    const e = ease(mt);
+    cam.position.lerpVectors(camFrom, camT, e);
+    look.lerpVectors(lookFrom, lookT, e);
+    spin = spinFrom + (spinT - spinFrom) * e;
+    rock = rockFrom + (rockT - rockFrom) * e;
+    drift = driftFrom + (driftT - driftFrom) * e;
+    cam.position.x += Math.sin(time * 0.06) * 2.6 * drift * zoom;      // a slow pan past the city
+    ang += spin * dt;                                                 // turning shapes turn their targets, not the scene,
+    const ca = Math.cos(ang), sa = Math.sin(ang);                     // so leaving the crown never has to unwind a spin
+
+    if (mouse.x > -50) {
+      ray.setFromCamera(mouse, cam);
+      if (ray.ray.intersectPlane(plane, tmpV)) m3t.copy(tmpV);
+    }
+    m3.lerp(m3t, 0.18);
+    const mx = m3.x, my = m3.y, mz = m3.z, force = MOUSE_FORCE * 0.13, Rr = 4.2, R2 = Rr * Rr, t = time;
+    const pos = points.geometry.attributes.position.array;
+    const col = colorAttr.array;
+    for (let i = 0; i < N; i++) {
+      const j = i * 3;
+      let tx = ta[j], tz = ta[j + 2];
+      if (ang !== 0) { const rx = tx * ca + tz * sa; tz = tz * ca - tx * sa; tx = rx; }
+      const bx = fa[j] + (tx - fa[j]) * e;
+      const by = fa[j + 1] + (ta[j + 1] - fa[j + 1]) * e;
+      const bz = fa[j + 2] + (tz - fa[j + 2]) * e;
+      cur[j] = bx; cur[j + 1] = by; cur[j + 2] = bz;
+      const breath = Math.sin(t * 1.3 + bx * 0.32 + bz * 0.21) * 0.2;
+      const dx = bx - mx, dy = by - my, dz = bz - mz, d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 < R2 && d2 > 0.0001) {
+        const d = Math.sqrt(d2), f = (1 - d / Rr) * (1 - d / Rr) * force;
+        ovx[i] += dx / d * f; ovy[i] += dy / d * f; ovz[i] += dz / d * f;
+      }
+      ovx[i] = (ovx[i] - ox[i] * 0.045) * 0.9;
+      ovy[i] = (ovy[i] - oy[i] * 0.045) * 0.9;
+      ovz[i] = (ovz[i] - oz[i] * 0.045) * 0.9;
+      ox[i] += ovx[i]; oy[i] += ovy[i]; oz[i] += ovz[i];
+      pos[j] = bx + ox[i];
+      pos[j + 1] = by + breath + oy[i];
+      pos[j + 2] = bz + oz[i];
+      // shine: a slow shimmer on every grain, and now and then a bright silver glint
+      let g = Math.sin(t * gw[i] + gp[i]);
+      g = g > 0.99 ? (g - 0.99) * 100 : 0;
+      const b = 0.82 + 0.22 * Math.sin(t * tw[i] + tp[i]) + g * 2;
+      col[j] = Math.min(1, base[j] * b); col[j + 1] = Math.min(1, base[j + 1] * b); col[j + 2] = Math.min(1, base[j + 2] * b);
+    }
+    points.geometry.attributes.position.needsUpdate = true;
+    colorAttr.needsUpdate = true;
+    points.rotation.z = Math.sin(t * 0.55) * rock;
+    cam.lookAt(look);
+    renderer.render(scene, cam);
+    // while the logo stands (outside the opening, which dims more), the board steps back so the logo reads
+    const wantDim = !intro && current === 'logo' && mt > 0.55;
+    if (wantDim !== dim) { dim = wantDim; document.body.classList.toggle('sand-logo', dim); }
+  }
+
+  /* ---------- running only while the board is on screen ---------- */
+
+  const onScreen = () => !document.hidden && !$('view-board').hidden;
+
+  function loop() {
+    if (!renderer || failed) return;
+    if (onScreen() && !raf) { clock.getDelta(); tick(); }
+    else if (!onScreen() && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+
+  function webgl() {
+    try {
+      const c = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+    } catch (e) { return false; }
+  }
+
+  function load() {
+    if (window.THREE) return Promise.resolve(window.THREE);
+    return new Promise((ok, no) => {
+      const s = document.createElement('script');
+      s.src = THREE_URL;
+      s.async = true;
+      s.onload = () => (window.THREE ? ok(window.THREE) : no(new Error('three.js missing')));
+      s.onerror = () => no(new Error('three.js did not load'));
+      document.head.appendChild(s);
+    });
+  }
+
+  function start() {
+    if (reducedMotion || failed || loading || renderer || !$('sand')) return;
+    if (!webgl()) { failed = true; return; }
+    loading = true;
+    load().then((T) => {
+      THREE = T;
+      init();
+      document.body.classList.add('sand-on');
+      loop();
+      setInterval(loop, 700);
+      document.addEventListener('visibilitychange', loop);
+    }).catch(() => { failed = true; }).finally(() => { loading = false; });
+  }
+
+  /** A confirmed guest: every grain jumps a little and settles back. */
+  function ripple() {
+    if (!forms || reducedMotion) return;
+    for (let i = 0; i < N; i++) {
+      ovy[i] += 0.16 + R() * 0.3;
+      ovx[i] += (R() - 0.5) * 0.24;
+      ovz[i] += (R() - 0.5) * 0.24;
+    }
+  }
+
+  /** A new leader: the sand gathers into the crown for a few seconds. */
+  function crown() {
+    if (!forms) return;
+    override = 'crown';
+    overrideUntil = time + 7;
+  }
+
+  return { start, ripple, crown };
+})();
+
+Sand.start();
+
+/* Dashboard: digital countdown, agent ranking (podium + tier cards), motivation ticker, floating
+   Latest feed and celebrations. Tiers follow AgentPerformanceColorTiers.pdf (top 25% Elite, middle
+   50% Core, bottom 25% Growth), regraded for Dubai: gold, platinum, bronze. */
+
+const TIER = {
+  elite: { label: 'Elite', color: '#E3B35E', soft: 'rgba(227, 179, 94, 0.17)' },
+  core: { label: 'Core', color: '#D7DEE8', soft: 'rgba(215, 222, 232, 0.12)' },
+  growth: { label: 'Growth', color: '#C98350', soft: 'rgba(201, 131, 80, 0.16)' }
+};
+
+/** Who is ahead on the numbers: most confirmed guests, then most RSVPs, then most arrivals (0 = level). */
+const rankCmp = (a, b) => b.confirmed - a.confirmed || b.parties - a.parties || b.arrived - a.arrived;
+
+/** Top 25% Elite, middle 50% Core, bottom 25% Growth (12 agents: 3 / 6 / 3). Agents with exactly the
+    same numbers share a tier, so the order of names never decides a colour, and Elite needs at least
+    one confirmed guest. */
+function tierFor(a, agents) {
+  const cut = Math.max(1, Math.round(agents.length * 0.25));
+  let above = 0, below = 0;
+  agents.forEach((o) => {
+    const c = rankCmp(o, a);
+    if (c < 0) above++;
+    else if (c > 0) below++;
+  });
+  if (a.confirmed > 0 && above < cut) return 'elite';
+  if (below < cut) return 'growth';
+  return 'core';
+}
+
+/** 1 -> "1st", 2 -> "2nd", 11 -> "11th", 22 -> "22nd" */
+const ordinal = (n) => {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+/** Every agent gets their own place: most confirmed guests first, then most RSVPs, then most arrivals. */
+const byLeader = (a, b) => rankCmp(a, b) || a.name.localeCompare(b.name);
+
+const ICON = {
+  crown: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 8l4.6 3.6L12 4.5l4.4 7.1L21 8l-1.8 10.5H4.8z"/><rect x="4.8" y="19.6" width="14.4" height="1.9" rx=".9"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.5 2.5s5 4.4 5 10.1a5.5 5.5 0 0 1-11 0c0-2.4 1.1-4.2 2.3-5.4.1 2.2 1.1 3.5 2.3 3.6-.2-3.4 1.4-6.5 1.4-8.3z"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3.5 3.5 0 0 0 4 4.2M16 6h3.5a3.5 3.5 0 0 1-4 4.2M12 13v4M8 20h8"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2L4 14h6.5l-1 8L19 10h-6.5z"/></svg>',
+  up: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 5l7.5 9.5h-15z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+  people: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c.8-3.4 3.2-5 6-5s5.2 1.6 6 5M16 5.2a3 3 0 0 1 0 5.6M18 14.4c1.6.7 2.6 2.3 3 4.6"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>'
+};
+
+/* ---------- photos (kept in the company Sheet, loaded for dashboard viewers and signed-in people) ---------- */
+
+const pkey = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toLowerCase();
+const initials = (name) => {
+  const p = String(name || '').trim().split(/\s+/).filter(Boolean);
+  return ((p[0] || '?')[0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+};
+
+function avatarInner(name) {
+  const url = S.photos[pkey(name)];
+  return url ? '<img src="' + esc(url) + '" alt="">' : '<b>' + esc(initials(name)) + '</b>';
+}
+
+function avatar(name, cls) {
+  return '<span class="av' + (cls ? ' ' + cls : '') + '" aria-hidden="true">' + avatarInner(name) + '</span>';
+}
+
+/** Redraws an avatar only when its picture changed, so images don't flicker on every update. */
+function setAvatar(node, name) {
+  const url = S.photos[pkey(name)];
+  const k = (url ? 'p' + url.length : 'i') + ':' + pkey(name);
+  if (node.dataset.k !== k) {
+    node.dataset.k = k;
+    node.innerHTML = avatarInner(name);
+  }
+}
+
+let photosBusy = false;
+async function loadPhotos() {
+  if (photosBusy) return;
+  photosBusy = true;
+  try {
+    const res = await call('photos', { boardKey: S.boardKey, auth: S.auth });
+    S.photos = res.map || {};
+    S.photosV = res.v || '';
+    if (S.board && S.event) renderBoard();
+    if (S.view === 'agents') renderAgents();
+    if (S.view === 'mine') renderMine();
+  } catch (e) { /* no access or offline: initials stay */ } finally {
+    photosBusy = false;
+  }
+}
+
+/* ---------- board ---------- */
+
+function applyBoard(b) {
+  if (!b || b.same) return;
+  S.board = b;
+  S.boardV = b.v;
+  if (S.event) renderBoard();
+}
+
+function renderBoard() {
+  const b = S.board;
+  const t = b.totals;
+  $('boardBody').hidden = !canSeeBoard();
+  $('welcome').hidden = !!(S.mine && S.mine.who) || canSeeBoard();
+
+  setNum('kConfirmed', t.confirmed);
+  setNum('kParties', t.parties);
+  setNum('kMaybe', t.maybe);
+  setNum('kAwaiting', t.awaiting);
+  setNum('kDeclined', t.declined);
+  setNum('kArrived', t.arrived);
+  setNum('kTodayNew', t.todayNew || 0);
+  setNum('kTodayConfirmed', t.todayConfirmed || 0);
+  setNum('kTodayArrived', t.todayArrived || 0);
+  $('kPartiesNote').textContent = t.confirmedParties + ' confirmed';
+  $('kArrivedNote').textContent = t.arrived ? 'of ' + t.confirmed + ' confirmed' : 'people checked in';
+  const maybeLine = t.maybe ? ' &middot; ' + plural(t.maybe, 'person says', 'people say') + ' maybe' : '';
+  $('capText').innerHTML = (t.confirmedParties ? 'from <b>' + plural(t.confirmedParties, 'RSVP', 'RSVPs') + '</b>' : 'No confirmed RSVPs yet') + maybeLine;
+
+  renderRanking(b.agents);
+  renderArrivals(b.arrivals);
+  renderTicker(b.agents, t);
+  renderFeed(b.feed);
+  if (S.prevConfirmed != null && t.confirmed > S.prevConfirmed && S.view === 'board') confetti(60, innerWidth * 0.25, innerHeight * 0.45);
+  S.prevConfirmed = t.confirmed;
+}
+
+function setNum(id, to) {
+  const node = $(id);
+  const from = Number(node.dataset.v || 0);
+  node.dataset.v = to;
+  if (from === to || reducedMotion) { node.textContent = to; return; }
+  const t0 = performance.now();
+  const dur = 900;
+  const step = (ts) => {
+    const k = Math.min(1, (ts - t0) / dur);
+    node.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+    if (k < 1 && node.dataset.v === String(to)) requestAnimationFrame(step);
+    else node.textContent = node.dataset.v;
+  };
+  requestAnimationFrame(step);
+  node.classList.remove('pop');
+  void node.offsetWidth;
+  node.classList.add('pop');
+}
+
+/* ---------- agent ranking: top 3 on a podium, everyone else as tier cards ---------- */
+
+function makePod() {
+  const el = document.createElement('article');
+  el.innerHTML = '<span class="pod-crown">' + ICON.crown + '</span>' +
+    '<div class="pod-photo"><i class="pod-ring"></i><span class="av av-xl"></span><b class="pod-medal"></b></div>' +
+    '<p class="pod-name"></p><span class="tier-tag"></span>' +
+    '<p class="pod-num"><b></b><small></small></p><p class="pod-sub"></p><p class="pod-gap"></p>';
+  el.addEventListener('animationend', (e) => { if (e.animationName === 'popIn') el.classList.remove('enter'); });
+  return el;
+}
+
+function makeRow() {
+  const li = document.createElement('li');
+  li.innerHTML = '<span class="rk-rank"></span><span class="av"></span>' +
+    '<div class="rk-main"><p class="rk-name"></p><span class="rk-bar"><i></i></span><p class="rk-sub"></p></div>' +
+    '<p class="rk-num"><b></b><small></small></p>';
+  li.addEventListener('animationend', (e) => { if (e.animationName === 'popIn') li.classList.remove('enter'); });
+  return li;
+}
+
+/** What it takes to move up (or how far ahead the leader is). */
+function gapLine(agents, i) {
+  const a = agents[i];
+  if (i === 0) {
+    const second = agents[1];
+    if (!second) return '';
+    const lead = a.confirmed - second.confirmed;
+    if (lead > 0) return 'Leads by ' + plural(lead, 'guest', 'guests');
+    return a.confirmed > 0 ? 'Tied at the top' : 'First confirmed guest takes the crown';
+  }
+  const ahead = agents[i - 1];
+  return (ahead.confirmed - a.confirmed + 1) + ' to pass ' + firstName(ahead.name);
+}
+
+function fillCard(el, a, rank, tier, gap, onPodium, max) {
+  const T = TIER[tier];
+  const hot = a.today >= 3;
+  const keepEnter = el.classList.contains('enter');
+  el.className = (onPodium ? 'pod p' + rank : 'rk') + ' tier-' + tier + (a.active ? '' : ' off') + (hot ? ' hot' : '') + (keepEnter ? ' enter' : '');
+  el.style.setProperty('--tier', T.color);
+  el.style.setProperty('--tier-soft', T.soft);
+  const badge = hot ? '<span class="hot-badge">' + ICON.flame + 'On fire</span>' : '';
+  const sub = plural(a.parties, 'RSVP', 'RSVPs') + (a.today ? ' &middot; <b>+' + a.today + ' today</b>' : '') +
+    (a.arrived ? ' &middot; ' + a.arrived + ' arrived' : '') + (a.active ? '' : ' &middot; not on the agents list');
+  const word = a.confirmed === 1 ? 'guest' : 'guests';
+  setAvatar(el.querySelector('.av'), a.name);
+  if (onPodium) {
+    el.querySelector('.pod-medal').textContent = rank;
+    el.querySelector('.pod-name').innerHTML = esc(a.name) + (badge ? ' ' + badge : '');
+    el.querySelector('.tier-tag').textContent = T.label;
+    el.querySelector('.pod-num b').textContent = a.confirmed;
+    el.querySelector('.pod-num small').textContent = word;
+    el.querySelector('.pod-sub').innerHTML = sub;
+    el.querySelector('.pod-gap').textContent = gap;
+  } else {
+    el.querySelector('.rk-rank').textContent = ordinal(rank);
+    el.querySelector('.rk-name').innerHTML = '<span class="nm">' + esc(a.name) + '</span>' + badge;
+    el.querySelector('.rk-num b').textContent = a.confirmed;
+    el.querySelector('.rk-num small').textContent = word;
+    el.querySelector('.rk-sub').innerHTML = '<span class="tier-tag">' + T.label + '</span><span>' + sub + '</span>' +
+      (gap ? '<span class="gap">' + ICON.up + esc(gap) + '</span>' : '');
+    const bar = el.querySelector('.rk-bar i');
+    requestAnimationFrame(() => { bar.style.width = Math.max(a.confirmed ? 6 : 0, a.confirmed / max * 100) + '%'; });
+  }
+}
+
+/** Puts children in the given order, moving only the ones that are out of place. */
+function placeInOrder(container, els) {
+  els.forEach((el, i) => {
+    if (container.children[i] !== el) container.insertBefore(el, container.children[i] || null);
+  });
+}
+
+function renderArrivals(slots) {
+  const box = $('arrivalChart');
+  const list = $('arrivalList');
+  if (!box || !list) return;
+  const rows = (slots || []).filter((slot) => slot.records > 0);
+  box.hidden = !canSeeBoard() || !rows.length;
+  if (!rows.length) { list.innerHTML = ''; return; }
+  const max = Math.max(1, ...rows.map((slot) => slot.expectedAttendees || 0));
+  list.innerHTML = rows.map((slot) => {
+    const people = slot.expectedAttendees || 0;
+    const width = Math.max(people ? 6 : 0, (people / max) * 100);
+    const label = slot.expectedArrivalLabel || slot.expectedArrival;
+    return '<li><span>' + esc(label) + '</span><span class="bar"><i style="width:' + width + '%"></i></span><b>' +
+      people + ' guests · ' + slot.records + (slot.records === 1 ? ' RSVP' : ' RSVPs') + '</b></li>';
+  }).join('');
+}
+
+function renderRanking(agentsIn) {
+  const podium = $('podium');
+  const list = $('ranks');
+  if (!agentsIn.length) {
+    podium.innerHTML = '';
+    list.innerHTML = '<li class="stage-empty">No agents yet. Add them in the Agents tab, then they appear here.</li>';
+    return;
+  }
+  const stale = list.querySelector('.stage-empty');
+  if (stale) stale.remove();
+  const agents = agentsIn.slice().sort(byLeader);
+  const max = Math.max(1, agents[0].confirmed);
+  const prev = S.prevRanks;
+  const before = {};
+  list.querySelectorAll('li.rk').forEach((li) => { before[li.dataset.id] = li.getBoundingClientRect().top; });
+  const old = {};
+  podium.querySelectorAll('.pod').forEach((el) => { old['p:' + el.dataset.id] = el; });
+  list.querySelectorAll('li.rk').forEach((el) => { old['l:' + el.dataset.id] = el; });
+
+  const pods = [];
+  const rows = [];
+  const next = {};
+  agents.forEach((a, i) => {
+    const rank = i + 1;
+    const onPodium = rank <= 3;
+    const key = (onPodium ? 'p:' : 'l:') + a.id;
+    let el = old[key];
+    if (!el) {
+      el = onPodium ? makePod() : makeRow();
+      el.dataset.id = a.id;
+      el.classList.add('enter');
+      el.style.setProperty('--i', onPodium ? [1, 0, 2][i] : i);
+    }
+    delete old[key];
+    fillCard(el, a, rank, tierFor(a, agents), gapLine(agents, i), onPodium, max);
+    const was = prev && prev[a.id];
+    if (was && a.confirmed > was.confirmed) bumpCard(el, a.confirmed - was.confirmed);
+    if (was && rank < was.rank) upChip(el, was.rank - rank);
+    next[a.id] = { rank, confirmed: a.confirmed };
+    (onPodium ? pods : rows).push(el);
+  });
+  Object.keys(old).forEach((k) => old[k].remove());
+  placeInOrder(podium, pods);
+  placeInOrder(list, rows);
+
+  if (prev && !reducedMotion) {
+    rows.forEach((li) => {
+      const top0 = before[li.dataset.id];
+      if (top0 == null) return;
+      const dy = top0 - li.getBoundingClientRect().top;
+      if (Math.abs(dy) > 2) li.animate([{ transform: 'translateY(' + dy + 'px)' }, { transform: 'none' }], { duration: 700, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    });
+  }
+  const leader = agents[0];
+  if (prev && S.leaderId && S.leaderId !== leader.id && leader.confirmed > 0) celebrate(leader);
+  S.leaderId = leader.id;
+  S.prevRanks = next;
+}
+
+function bumpCard(el, n) {
+  if (reducedMotion) return;
+  const num = el.querySelector('.pod-num b, .rk-num b');
+  num.classList.remove('bump');
+  void num.offsetWidth;
+  num.classList.add('bump');
+  const plus = document.createElement('span');
+  plus.className = 'plus';
+  plus.textContent = '+' + n;
+  el.appendChild(plus);
+  setTimeout(() => plus.remove(), 1700);
+  el.classList.add('glow');
+  setTimeout(() => el.classList.remove('glow'), 1500);
+  if (S.view === 'board') {
+    const r = el.getBoundingClientRect();
+    confetti(26, r.right - 40, r.top + 24);
+    Sand.ripple();
+  }
+}
+
+function upChip(el, n) {
+  const chip = document.createElement('span');
+  chip.className = 'up-chip';
+  chip.innerHTML = ICON.up + 'Up ' + n;
+  el.appendChild(chip);
+  setTimeout(() => chip.remove(), 4200);
+}
+
+function celebrate(a) {
+  if (S.view !== 'board' || !canSeeBoard()) return;
+  const box = $('celebrate');
+  $('celebrateAv').innerHTML = avatar(a.name, 'av-hero');
+  $('celebrateName').textContent = a.name;
+  $('celebrateSub').textContent = 'takes the lead with ' + plural(a.confirmed, 'confirmed guest', 'confirmed guests');
+  box.hidden = false;
+  box.classList.remove('out');
+  confetti(170, innerWidth / 2, innerHeight * 0.3);
+  Sand.crown();
+  clearTimeout(celebrate.t1);
+  clearTimeout(celebrate.t2);
+  celebrate.t1 = setTimeout(() => box.classList.add('out'), 3800);
+  celebrate.t2 = setTimeout(() => { box.hidden = true; box.classList.remove('out'); }, 4400);
+}
+
+/* ---------- motivation ticker ---------- */
+
+function renderTicker(agentsIn, t) {
+  const agents = agentsIn.slice().sort(byLeader);
+  const items = [];
+  const lead = agents[0];
+  if (lead && lead.confirmed > 0) items.push([ICON.crown, '<b>' + esc(lead.name) + '</b> leads with ' + plural(lead.confirmed, 'confirmed guest', 'confirmed guests')]);
+  for (let i = 1; i < agents.length && items.length < 4; i++) {
+    const a = agents[i];
+    const b = agents[i - 1];
+    if (b.confirmed > 0 && b.confirmed - a.confirmed <= 1) {
+      items.push([ICON.bolt, '<b>' + esc(firstName(a.name)) + '</b> is ' + plural(b.confirmed - a.confirmed + 1, 'guest', 'guests') + ' away from passing <b>' + esc(firstName(b.name)) + '</b>']);
+    }
+  }
+  agents.filter((a) => a.today > 0).sort((x, y) => y.today - x.today).slice(0, 3)
+    .forEach((a) => items.push([ICON.flame, '<b>' + esc(firstName(a.name)) + '</b> added ' + plural(a.today, 'RSVP', 'RSVPs') + ' today']));
+  items.push([ICON.people, 'Team total: <b>' + plural(t.confirmed, 'confirmed guest', 'confirmed guests') + '</b> from ' + plural(t.parties, 'RSVP', 'RSVPs')]);
+  const win = S.event && eventWindow(S.event);
+  if (win && now() < win.start) {
+    const days = Math.ceil((win.start - now()) / 86400000);
+    items.push([ICON.clock, '<b>' + plural(days, 'day', 'days') + '</b> to opening. Every RSVP counts']);
+  }
+  items.push([ICON.star, 'The top 25% wear Elite mint. Who takes the crown?']);
+  items.push([ICON.up, 'One confirmed guest can move you up the ranking']);
+  const html = items.map((it) => '<span class="ticker-item">' + it[0] + '<span>' + it[1] + '</span></span><i class="ticker-dot"></i>').join('');
+  const track = $('tickerTrack');
+  if (track.dataset.sig !== html) {
+    track.dataset.sig = html;
+    track.innerHTML = '<span class="ticker-run">' + html + '</span><span class="ticker-run" aria-hidden="true">' + html + '</span>';
+    track.style.setProperty('--dur', Math.max(30, Math.round(track.textContent.length / 2 / 5)) + 's');
+  }
+}
+
+/* ---------- Latest: floating cards ---------- */
+
+const ST_CLASS = { Confirmed: 'st-confirmed', Maybe: 'st-maybe', Awaiting: 'st-awaiting', Declined: 'st-declined' };
+
+function feedLine(f) {
+  const g = f.guest ? '<b>' + esc(f.guest) + '</b>' : 'a guest';
+  const n = f.party > 1 ? ' &middot; ' + f.party + ' people' : '';
+  const tag = (cls, text) => ' <span class="tag ' + cls + '">' + esc(text) + '</span>';
+  if (f.action === 'checked in') return g + ' arrived' + n + tag('st-arrived', 'Arrived');
+  if (f.action === 'status') return g + ' is now' + tag(ST_CLASS[f.status] || '', f.status);
+  const verb = { Confirmed: 'confirmed', Maybe: 'added', Awaiting: 'invited', Declined: 'logged' }[f.status] || 'added';
+  return '<b>' + esc(f.who) + '</b> ' + verb + ' ' + g + n + tag(ST_CLASS[f.status] || '', f.status);
+}
+
+function renderFeed(feed) {
+  const ul = $('feed');
+  if (!feed.length) {
+    ul.innerHTML = '<li class="stage-empty">RSVPs appear here the moment an agent saves them.</li>';
+    S.feedKeys = new Set();
+    return;
+  }
+  const keys = feed.map((f) => f.t + '|' + f.action + '|' + f.guest);
+  ul.innerHTML = feed.map((f, i) => {
+    const fresh = S.feedKeys && !S.feedKeys.has(keys[i]);
+    return '<li class="' + (fresh ? 'new' : '') + '" style="--i:' + i + '">' + avatar(f.who, 'av-sm') +
+      '<p>' + feedLine(f) + '</p><time data-t="' + f.t + '">' + ago(f.t) + '</time></li>';
+  }).join('');
+  S.feedKeys = new Set(keys);
+}
+
+/* ---------- digital countdown ---------- */
+
+function setDigits(id, n) {
+  const el = $(id);
+  const txt = String(n).padStart(2, '0');
+  if (el.textContent === txt) return;
+  el.textContent = txt;
+  el.previousElementSibling.textContent = '8'.repeat(txt.length);
+}
+
+function renderCountdown(ev) {
+  const cd = $('countdown');
+  const win = eventWindow(ev);
+  if (!win) { cd.hidden = true; return; }
+  cd.hidden = false;
+  const t = now();
+  let state, label, target;
+  if (t < win.start) { state = 'before'; label = ev.daily ? 'Opens in' : 'Starts in'; target = win.start; }
+  else if (t < win.end) { state = 'open'; label = ev.daily ? 'Open now · closes in' : 'Happening now · ends in'; target = win.end; }
+  else if (ev.daily) { state = 'closed'; label = 'Closed · opens in'; target = win.start + 86400000; }
+  else { state = 'ended'; label = 'This open house has ended'; }
+  const cls = 'cd is-' + state;
+  if (cd.className !== cls) cd.className = cls;
+  $('cdLabel').textContent = label;
+  $('cdRow').hidden = state === 'ended';
+  if (state === 'ended') return;
+  const s = Math.max(0, Math.floor((target - t) / 1000));
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  setDigits('cdD', d);
+  setDigits('cdH', h);
+  setDigits('cdM', m);
+  setDigits('cdS', s % 60);
+  cd.setAttribute('aria-label', label + ' ' + d + ' days, ' + h + ' hours, ' + m + ' minutes');
+}
+
+/* ---------- once a second: countdown, "updated" line, feed times ---------- */
+
+function tick() {
+  const ev = S.event;
+  if (!ev) return;
+  if (ev.daily && S.shownDay !== todayDubai()) renderEventText();   // midnight in Dubai: show the new day
+  renderCountdown(ev);
+  const since = S.lastOk ? Math.round((Date.now() - S.lastOk) / 1000) : null;
+  $('updated').textContent = since == null ? 'Connecting' :
+    (S.failures ? 'Reconnecting · last update ' : 'Live · updated ') + (since < 5 ? 'just now' : since < 90 ? since + ' s ago' : Math.round(since / 60) + ' min ago');
+  if (S.board && Date.now() % 5000 < 1000) document.querySelectorAll('#feed time[data-t]').forEach((n) => { n.textContent = ago(Number(n.dataset.t)); });
+}
+
+/* ---------- confetti (mint, cyan, amber, white) ---------- */
+
+const confetti = (() => {
+  let canvas = null, ctx = null, parts = [], raf = 0;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const colors = ['#E3B35E', '#F7E2B0', '#C98350', '#FFFFFF'];
+  function size() {
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+  }
+  function step() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    parts.forEach((p) => {
+      p.vy += 0.32 * dpr;
+      p.vx *= 0.985;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.r += p.vr;
+      p.life++;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.r);
+      ctx.globalAlpha = Math.max(0, 1 - p.life / 150);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2);
+      ctx.restore();
+    });
+    parts = parts.filter((p) => p.life < 150 && p.y < canvas.height + 40);
+    raf = parts.length ? requestAnimationFrame(step) : 0;
+    if (!raf) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  return function burst(n, x, y) {
+    if (reducedMotion || document.hidden) return;
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.className = 'confetti';
+      document.body.appendChild(canvas);
+      ctx = canvas.getContext('2d');
+      size();
+      addEventListener('resize', size);
+    }
+    for (let i = 0; i < n; i++) {
+      parts.push({
+        x: x * dpr, y: y * dpr, vx: (Math.random() - 0.5) * 16 * dpr, vy: (-Math.random() * 13 - 5) * dpr,
+        s: (5 + Math.random() * 6) * dpr, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.35, c: colors[i % colors.length], life: 0
+      });
+    }
+    if (!raf) raf = requestAnimationFrame(step);
+  };
+})();
+
+/* Views: sign-in, the agent's own guests (every guest for the CEO), RSVP form, agents, event. */
+
+const nameKey = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toLowerCase();
+
+/* ---------- sign in / out ---------- */
+
+/** The sign-in sheet. The CEO link (?ceo) opens it with CEO already picked, ready for the PIN. */
+function openSignIn(asCeo) {
+  S.pick = asCeo === true ? { id: 'admin' } : null;
+  renderNames();
+  $('fPin').value = '';
+  $('pinField').hidden = !S.pick;
+  $('pinLabel').textContent = 'CEO PIN';
+  $('fPin').setAttribute('inputmode', 'numeric');
+  $('fPin').setAttribute('maxlength', '8');
+  $('fKeep').checked = true;
+  showErr('signinErr', '');
+  updateGo();
+  openSheet('sheet-signin');
+  if (S.pick) setTimeout(() => $('fPin').focus(), 60);
+}
+
+function renderNames() {
+  const names = S.agentNames.slice().sort((a, b) => a.localeCompare(b));
+  const on = (id) => (S.pick && S.pick.id === id ? ' on' : '');
+  let html = names.map((n) => '<button type="button" class="name-btn' + on(n) + '" role="radio" aria-checked="' + !!on(n) +
+    '" data-id="' + esc(n) + '">' + esc(n) + '</button>').join('');
+  if (!names.length) html = '<p class="names-empty">No agents are on the list yet. The CEO adds them first.</p>';
+  html += '<button type="button" class="name-btn mgr' + on('admin') + '" role="radio" aria-checked="' + !!on('admin') + '" data-id="admin">CEO</button>';
+  $('nameList').innerHTML = html;
+}
+
+function updateGo() {
+  const len = $('fPin').value.trim().length;
+  $('signinGo').disabled = !(S.pick && len >= (S.pick.id === 'admin' ? 4 : 1));
+}
+
+$('nameList').addEventListener('click', (e) => {
+  const b = e.target.closest('.name-btn');
+  if (!b) return;
+  const admin = b.dataset.id === 'admin';
+  S.pick = { id: b.dataset.id };
+  renderNames();
+  $('pinField').hidden = false;
+  $('pinLabel').textContent = admin ? 'CEO PIN' : 'Your ID';
+  $('fPin').setAttribute('inputmode', admin ? 'numeric' : 'text');
+  $('fPin').setAttribute('maxlength', admin ? '8' : '30');
+  showErr('signinErr', '');
+  $('fPin').value = '';
+  $('fPin').focus();
+  updateGo();
+});
+
+$('fPin').addEventListener('input', () => {
+  if (S.pick && S.pick.id === 'admin') $('fPin').value = $('fPin').value.replace(/\D/g, '');
+  updateGo();
+});
+
+$('signinForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if ($('signinGo').disabled) return;
+  const auth = { id: S.pick.id, pin: $('fPin').value.trim() };
+  busy($('signinGo'), true, 'Checking');
+  try {
+    const res = await call('login', { auth });
+    S.auth = auth;
+    store.set(AUTH_KEY, auth, $('fKeep').checked);
+    S.epoch++;
+    applyPublic(res);
+    applyBoard(res.board);
+    applyMine(res.mine);
+    closeSheet('sheet-signin');
+    setView(isAdmin() ? homeView() : 'mine');
+    toast('Signed in as <b>' + esc(res.mine.who.name) + '</b>');
+    loadPhotos();
+  } catch (err) {
+    showErr('signinErr', err.message);
+    $('fPin').select();
+  } finally {
+    busy($('signinGo'), false);
+    updateGo();
+  }
+});
+
+function signOut(msg) {
+  S.auth = null;
+  S.mine = null;
+  S.mineV = '';
+  if (!S.boardKey || S.boardKeyBad) {
+    S.board = null;
+    S.boardV = '';
+    S.photos = {};
+    S.photosV = '';
+    S.prevRanks = null;
+  }
+  S.filter = 'all';
+  S.agentFilter = '';
+  S.eventFilter = '';
+  S.query = '';
+  $('search').value = '';
+  store.del(AUTH_KEY);
+  if (document.body.classList.contains('tv')) setTv(false);
+  applyAuthUi();
+  setView('board');
+  if (msg) toast(esc(msg), 5000);
+}
+
+$('signInBtn').addEventListener('click', () => openSignIn(S.ceoLink));
+$('welcomeSignIn').addEventListener('click', () => openSignIn(S.ceoLink));
+$('signOutBtn').addEventListener('click', () => signOut('Signed out.'));
+
+function applyAuthUi() {
+  const who = S.mine && S.mine.who;
+  const admin = isAdmin();
+  $('signInBtn').hidden = !!who;
+  $('me').hidden = !who;
+  $('meName').textContent = who ? who.name : '';
+  // Agents get two tabs (Dashboard + My RSVPs); the CEO gets all four.
+  $('tabs').hidden = !(admin || (!!who && canSeeBoard()));
+  document.querySelectorAll('#tabs [data-admin]').forEach((b) => { b.hidden = !admin; });
+  $('tabMine').textContent = admin ? 'All guests' : 'My RSVPs';
+  $('welcome').hidden = !!who || canSeeBoard();
+  $('welcomeText').textContent = S.boardKeyBad && !who
+    ? 'This dashboard link has been replaced. Ask the CEO for the new one. Agents can still sign in below.'
+    : S.ceoLink
+      ? 'CEO: sign in with your CEO PIN to see the dashboard, every guest, the agents and the event settings.'
+      : 'Agents: sign in with your name and the ID the CEO gave you, then add every guest you invite.';
+  $('boardBody').hidden = !canSeeBoard();
+}
+
+/* ---------- views ---------- */
+
+/** Where a link lands: the CEO link and the dashboard link open the dashboard; the agent link opens My RSVPs (or sign-in). */
+function homeView() {
+  if ((S.boardKey || (S.ceoLink && isAdmin())) && canSeeBoard()) return 'board';
+  return S.mine && S.mine.who ? 'mine' : 'board';
+}
+
+function setView(v) {
+  const who = S.mine && S.mine.who;
+  if (!who) v = 'board';
+  else if (who.role !== 'admin') v = v === 'board' && canSeeBoard() ? 'board' : 'mine';
+  const changed = S.view !== v;
+  S.view = v;
+  applyAuthUi();
+  ['board', 'mine', 'agents', 'event'].forEach((k) => { $('view-' + k).hidden = k !== v; });
+  document.querySelectorAll('#tabs button').forEach((b) => { b.classList.toggle('on', b.dataset.view === v); });
+  if (v === 'board' && S.board && S.event) renderBoard();
+  if (v === 'mine') renderMine();
+  if (v === 'agents') renderAgents();
+  if (v === 'event') fillEvent(true);
+  if (changed) window.scrollTo(0, 0);
+}
+
+$('tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-view]');
+  if (b) setView(b.dataset.view);
+});
+
+function applyMine(m) {
+  if (!m || m.same) return;
+  const before = S.mine ? new Map(S.mine.rsvps.map((r) => [r.id, r.updated + '|' + r.checkedIn])) : null;
+  const firstTime = !S.mine;
+  S.mine = m;
+  S.mineV = m.v;
+  if (firstTime) setView(homeView());
+  else applyAuthUi();
+  const changed = before ? m.rsvps.filter((r) => before.get(r.id) !== r.updated + '|' + r.checkedIn).map((r) => r.id) : [];
+  if (S.view === 'mine') renderMine(changed);
+  if (S.view === 'agents') renderAgents();
+  if (S.view === 'event') fillEvent(false);
+}
+
+/* ---------- my RSVPs / all guests ---------- */
+
+function renderMine(flash) {
+  const m = S.mine;
+  if (!m) return;
+  const admin = m.who.role === 'admin';
+  $('mineTitle').textContent = admin ? 'All guests' : 'My RSVPs';
+  $('mineEyebrow').textContent = admin ? 'CEO' : 'Signed in as ' + m.who.name;
+  $('mineAvatar').innerHTML = admin ? '' : avatar(m.who.name);
+  $('closedNote').hidden = m.open;
+  $('closedNote').textContent = admin
+    ? 'RSVPs are closed for agents. You can still add and edit. Reopen them in Event.'
+    : 'RSVPs are closed by the CEO. You can still check guests in when they arrive.';
+  $('addBtn').disabled = !m.open && !admin;
+
+  const eventFilter = $('eventFilter');
+  if (eventFilter) {
+    const events = [];
+    m.rsvps.forEach((r) => {
+      if (r.eventId && !events.some((item) => item.id === r.eventId)) events.push({ id: r.eventId, name: r.eventName || 'Open house' });
+    });
+    events.sort((a, b) => a.name.localeCompare(b.name));
+    eventFilter.hidden = !admin || events.length < 2;
+    const eventOpts = '<option value="">All events</option>' + events.map((item) => '<option value="' + esc(item.id) + '">' + esc(item.name) + '</option>').join('');
+    if (eventFilter.dataset.opts !== eventOpts) { eventFilter.innerHTML = eventOpts; eventFilter.dataset.opts = eventOpts; }
+    if (S.eventFilter && !events.some((item) => item.id === S.eventFilter)) S.eventFilter = '';
+    eventFilter.value = S.eventFilter;
+  }
+
+  const agentFilter = $('agentFilter');
+  agentFilter.hidden = !admin;
+  if (admin) {
+    const names = (m.agents || []).map((a) => a.name);
+    m.rsvps.forEach((r) => { if (r.agent && !names.some((n) => nameKey(n) === nameKey(r.agent))) names.push(r.agent); });
+    const opts = '<option value="">All agents</option>' + names.sort((a, b) => a.localeCompare(b))
+      .map((n) => '<option value="' + esc(n) + '">' + esc(n) + '</option>').join('');
+    if (agentFilter.dataset.opts !== opts) { agentFilter.innerHTML = opts; agentFilter.dataset.opts = opts; }
+    agentFilter.value = S.agentFilter;
+  }
+
+  const scoped = m.rsvps.filter((r) => (!S.eventFilter || r.eventId === S.eventFilter) && (!S.agentFilter || nameKey(r.agent) === nameKey(S.agentFilter)));
+  const sumParty = (rows) => rows.reduce((n, r) => n + r.party, 0);
+  $('myStats').innerHTML =
+    '<div><dt>Confirmed guests</dt><dd>' + sumParty(scoped.filter((r) => r.status === 'Confirmed')) + '</dd></div>' +
+    '<div><dt>RSVPs</dt><dd>' + scoped.length + '</dd></div>' +
+    '<div><dt>Awaiting reply</dt><dd>' + scoped.filter((r) => r.status === 'Awaiting').length + '</dd></div>' +
+    '<div><dt>Arrived</dt><dd>' + sumParty(scoped.filter((r) => r.checkedIn)) + '<small>people</small></dd></div>';
+
+  const counts = { all: scoped.length, Arrived: scoped.filter((r) => r.checkedIn).length };
+  STATUSES.forEach((s) => { counts[s] = scoped.filter((r) => r.status === s).length; });
+  $('chips').innerHTML = ['all'].concat(STATUSES, ['Arrived']).map((f) => '<button type="button" class="chip' + (S.filter === f ? ' on' : '') +
+    '" data-f="' + f + '" aria-pressed="' + (S.filter === f) + '">' + (f === 'all' ? 'All' : f) + ' <b>' + counts[f] + '</b></button>').join('');
+
+  const q = S.query.trim().toLowerCase();
+  const qDigits = q.replace(/\D/g, '');
+  const rows = scoped.filter((r) => {
+    if (S.filter === 'Arrived' ? !r.checkedIn : S.filter !== 'all' && r.status !== S.filter) return false;
+    if (!q) return true;
+    return (r.name + ' ' + r.notes + ' ' + r.agent + ' ' + r.interest).toLowerCase().indexOf(q) >= 0 ||
+      (qDigits.length >= 3 && r.mobile.replace(/\D/g, '').indexOf(qDigits) >= 0);
+  }).sort((a, b) => b.created - a.created);
+
+  const flashSet = new Set(flash || []);
+  $('list').innerHTML = rows.map((r) => rowHtml(r, admin, flashSet.has(r.id))).join('');
+
+  const empty = $('listEmpty');
+  if (rows.length) empty.hidden = true;
+  else {
+    empty.hidden = false;
+    empty.innerHTML = scoped.length
+      ? '<h3>No matches</h3><p>Nothing fits this filter or search. Clear the search or pick another status.</p>'
+      : admin
+        ? '<h3>No RSVPs yet</h3><p>When agents add guests, every RSVP shows up here with the agent\'s name. You can also add one for any agent.</p>'
+        : '<h3>No guests yet</h3><p>Add the first guest you invited. The CEO sees it on the live dashboard the moment you save.</p>' +
+          (m.open ? '<button class="btn" type="button" data-add-rsvp>Add your first RSVP</button>' : '');
+  }
+}
+
+function rowHtml(r, admin, flash) {
+  const canEdit = admin || S.mine.open;
+  const sub = ['<span class="g-mob">' + esc(fmtMobile(r.mobile)) + '</span>'];
+  if (r.arrival) sub.push('<span>Arrives ' + fmt12(r.arrival) + '</span>');
+  if (r.interest) sub.push('<span>' + esc(r.interest) + '</span>');
+  if (r.budget) sub.push('<span>' + esc(r.budget) + '</span>');
+  if (r.eventName) sub.push('<span>' + esc(r.eventName) + '</span>');
+  if (admin) sub.push('<span class="g-agent">' + esc(r.agent || 'No agent') + '</span>');
+  return '<li class="row' + (flash ? ' flash' : '') + '" data-id="' + esc(r.id) + '">' +
+    '<div class="row-main">' +
+      '<p class="g-name">' + esc(r.name) + '<span class="g-party">' + plural(r.party, 'person', 'people') + '</span></p>' +
+      '<p class="g-sub">' + sub.join('') + '</p>' +
+      (r.notes ? '<p class="g-notes">' + esc(r.notes) + '</p>' : '') +
+    '</div>' +
+    '<div class="row-side">' +
+      (r.checkedIn ? '<span class="arrived"><svg aria-hidden="true"><use href="#i-checkc"/></svg>Arrived ' + fmtClock(r.checkedIn) + '</span>' : '') +
+      '<span class="pill p-' + r.status.toLowerCase() + '">' + esc(r.status) + '</span>' +
+      '<span class="row-act">' +
+        '<a class="icon-btn" href="' + esc(waLink(r)) + '" target="_blank" rel="noopener" title="WhatsApp ' + esc(firstName(r.name)) + '" aria-label="Send WhatsApp to ' + esc(r.name) + '"><svg aria-hidden="true"><use href="#i-chat"/></svg></a>' +
+        '<button type="button" class="icon-btn' + (r.checkedIn ? ' on' : '') + '" data-act="checkin" aria-pressed="' + !!r.checkedIn + '" title="' + (r.checkedIn ? 'Undo check-in' : 'Check in on arrival') + '" aria-label="' + (r.checkedIn ? 'Undo check-in for ' : 'Check in ') + esc(r.name) + '"><svg aria-hidden="true"><use href="#i-check"/></svg></button>' +
+        '<button type="button" class="icon-btn" data-act="edit"' + (canEdit ? '' : ' disabled') + ' title="Edit" aria-label="Edit ' + esc(r.name) + '"><svg aria-hidden="true"><use href="#i-edit"/></svg></button>' +
+      '</span>' +
+    '</div></li>';
+}
+
+/** Pre-written WhatsApp message to the guest, sent from the agent's own phone. */
+function waLink(r) {
+  const ev = S.event || { name: 'Open House', start: '09:00', end: '22:00' };
+  const agent = r.agent || (S.mine ? S.mine.who.name : '');
+  const hours = fmt12(ev.start) + ' to ' + fmt12(ev.end);
+  const where = ev.venue ? ' at ' + ev.venue : '';
+  const startsLater = ev.daily && ev.date && ev.date > todayDubai();
+  const when = ev.daily
+    ? (startsLater ? ' from ' + fmtShortDate(ev.date) + ', open every day ' : ', open every day ') + hours
+    : ev.date ? ' on ' + fmtShortDate(ev.date) + ', ' + hours : '';
+  const arrive = r.arrival ? ' We will expect you at ' + fmt12(r.arrival) + '.' : '';
+  const hi = 'Hi ' + firstName(r.name) + ', this is ' + firstName(agent) + ' from DEEN Properties. ';
+  let text;
+  if (r.status === 'Confirmed') {
+    text = hi + 'You are confirmed for the ' + ev.name + where + when + '.' + arrive +
+      (r.party > 1 ? ' We look forward to welcoming all ' + r.party + ' of you.' : '') + ' See you there!';
+  } else if (r.status === 'Declined') {
+    text = hi + 'Sorry you can\'t make it to the ' + ev.name + '. I am happy to arrange a private viewing whenever it suits you.';
+  } else {
+    text = hi + 'You are invited to the ' + ev.name + where + when + '. Can you join us? Reply with the day and time that suit you and how many people are coming.';
+  }
+  return 'https://wa.me/' + String(r.mobile).replace(/\D/g, '') + '?text=' + encodeURIComponent(text);
+}
+
+$('chips').addEventListener('click', (e) => {
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  S.filter = b.dataset.f;
+  renderMine();
+});
+$('agentFilter').addEventListener('change', () => { S.agentFilter = $('agentFilter').value; renderMine(); });
+$('eventFilter').addEventListener('change', () => { S.eventFilter = $('eventFilter').value; renderMine(); });
+$('search').addEventListener('input', () => { S.query = $('search').value; renderMine(); });
+$('addBtn').addEventListener('click', () => openRsvp(null));
+$('listEmpty').addEventListener('click', (e) => { if (e.target.closest('[data-add-rsvp]')) openRsvp(null); });
+
+$('list').addEventListener('click', async (e) => {
+  const b = e.target.closest('button[data-act]');
+  if (!b || b.disabled) return;
+  const r = S.mine.rsvps.find((x) => x.id === b.closest('.row').dataset.id);
+  if (!r) return;
+  if (b.dataset.act === 'edit') { openRsvp(r); return; }
+  b.disabled = true;
+  try {
+    await write('checkIn', { id: r.id, arrived: !r.checkedIn });
+    toast(r.checkedIn ? 'Check-in undone for <b>' + esc(r.name) + '</b>.' : '<b>' + esc(r.name) + '</b> checked in' + (r.party > 1 ? ' with ' + (r.party - 1) + ' more' : '') + '.');
+  } catch (err) {
+    toast(esc(err.message), 6000);
+    b.disabled = false;
+  }
+});
+
+/* ---------- add / edit RSVP ---------- */
+
+function fillSelect(id, values, current, emptyLabel) {
+  const list = values.slice();
+  if (current && list.indexOf(current) < 0) list.push(current);
+  $(id).innerHTML = '<option value="">' + esc(emptyLabel) + '</option>' +
+    list.map((v) => '<option value="' + esc(v) + '"' + (v === current ? ' selected' : '') + '>' + esc(v) + '</option>').join('');
+}
+
+function arrivalSlots() {
+  const ev = S.event || { start: '18:00', end: '21:00' };
+  const toMin = (s) => { const p = s.split(':').map(Number); return p[0] * 60 + p[1]; };
+  const start = toMin(ev.start);
+  let end = toMin(ev.end);
+  if (end <= start) end += 24 * 60;
+  const out = [];
+  for (let t = start; t < end && out.length < 48; t += 30) {
+    const m = t % (24 * 60);
+    out.push(String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'));
+  }
+  return out;
+}
+
+function setParty(n) {
+  S.party = Math.max(1, Math.min(20, n));
+  $('fParty').textContent = S.party;
+  $('pMinus').disabled = S.party <= 1;
+  $('pPlus').disabled = S.party >= 20;
+}
+$('pMinus').addEventListener('click', () => setParty(S.party - 1));
+$('pPlus').addEventListener('click', () => setParty(S.party + 1));
+
+function openRsvp(r) {
+  const m = S.mine;
+  const admin = m.who.role === 'admin';
+  S.editing = r ? r.id : null;
+  $('rsvpTitle').textContent = r ? 'Edit RSVP' : 'Add RSVP';
+  $('agentField').hidden = !admin;
+  if (admin) {
+    const names = (m.agents || []).map((a) => a.name).sort((a, b) => a.localeCompare(b));
+    $('fAgent').innerHTML = '<option value="">Choose agent</option>' + names.map((n) => '<option value="' + esc(n) + '">' + esc(n) + '</option>').join('');
+    const current = r ? names.find((n) => nameKey(n) === nameKey(r.agent)) : names.find((n) => nameKey(n) === nameKey(S.agentFilter));
+    $('fAgent').value = current || '';
+  }
+  $('fName').value = r ? r.name : '';
+  $('fMobile').value = r ? fmtMobile(r.mobile) : '';
+  setParty(r ? r.party : 1);
+  const status = r ? r.status : 'Confirmed';
+  document.querySelectorAll('#fStatus input').forEach((i) => { i.checked = i.value === status; });
+  const slots = arrivalSlots();
+  const cur = r ? r.arrival : '';
+  if (cur && slots.indexOf(cur) < 0) slots.push(cur);
+  $('fArrival').innerHTML = '<option value="">Not sure</option>' + slots.map((s) => '<option value="' + s + '"' + (s === cur ? ' selected' : '') + '>' + fmt12(s) + '</option>').join('');
+  fillSelect('fInterest', INTERESTS, r ? r.interest : '', 'Not specified');
+  fillSelect('fBudget', BUDGETS, r ? r.budget : '', 'Not specified');
+  $('fNotes').value = r ? r.notes : '';
+  $('moreBox').open = !!(r && (r.interest || r.budget || r.notes));
+  $('rsvpDelete').hidden = !r;
+  $('delConfirm').hidden = true;
+  showErr('rsvpErr', '');
+  openSheet('sheet-rsvp');
+}
+
+$('rsvpForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const checked = document.querySelector('#fStatus input:checked');
+  const rsvp = {
+    id: S.editing || '', agentName: $('fAgent').value, name: $('fName').value.trim(), mobile: $('fMobile').value.trim(),
+    party: S.party, status: checked ? checked.value : '', arrival: $('fArrival').value,
+    interest: $('fInterest').value, budget: $('fBudget').value, notes: $('fNotes').value.trim()
+  };
+  if (isAdmin() && !rsvp.agentName && !S.editing) return showErr('rsvpErr', 'Choose the agent this guest belongs to.');
+  if (rsvp.name.length < 2) { $('fName').focus(); return showErr('rsvpErr', 'Add the guest\'s name.'); }
+  if (rsvp.mobile.replace(/\D/g, '').length < 7) { $('fMobile').focus(); return showErr('rsvpErr', 'Add the guest\'s mobile number, e.g. 050 123 4567.'); }
+  showErr('rsvpErr', '');
+  busy($('rsvpSave'), true);
+  try {
+    const wasNew = !S.editing;
+    const res = await write('saveRsvp', { rsvp });
+    closeSheet('sheet-rsvp');
+    const digits = rsvp.mobile.replace(/\D/g, '').slice(-9);
+    const saved = res.mine.rsvps.find((x) => x.mobile.replace(/\D/g, '').slice(-9) === digits);
+    toast('<span>' + (wasNew ? 'Added' : 'Saved') + ' <b>' + esc(rsvp.name) + '</b>.</span>' +
+      (saved ? '<a href="' + esc(waLink(saved)) + '" target="_blank" rel="noopener">WhatsApp them</a>' : ''), 8000);
+  } catch (err) {
+    showErr('rsvpErr', err.message);
+  } finally {
+    busy($('rsvpSave'), false);
+  }
+});
+
+$('rsvpDelete').addEventListener('click', () => { $('rsvpDelete').hidden = true; $('delConfirm').hidden = false; });
+$('delNo').addEventListener('click', () => { $('rsvpDelete').hidden = false; $('delConfirm').hidden = true; });
+$('delYes').addEventListener('click', async () => {
+  const r = S.mine.rsvps.find((x) => x.id === S.editing);
+  busy($('delYes'), true, 'Removing');
+  try {
+    await write('deleteRsvp', { id: S.editing });
+    closeSheet('sheet-rsvp');
+    toast('Removed <b>' + esc(r ? r.name : 'the guest') + '</b>.');
+  } catch (err) {
+    showErr('rsvpErr', err.message);
+  } finally {
+    busy($('delYes'), false);
+  }
+});
+
+/* ---------- CEO: agents ---------- */
+
+function renderAgents() {
+  const m = S.mine;
+  if (!m || !m.agents) return;
+  const stats = {};
+  m.rsvps.forEach((r) => {
+    const s = stats[nameKey(r.agent)] || (stats[nameKey(r.agent)] = { parties: 0, confirmed: 0 });
+    s.parties++;
+    if (r.status === 'Confirmed') s.confirmed += r.party;
+  });
+  const agents = m.agents.slice().sort((a, b) => a.name.localeCompare(b.name));
+  $('agentsEmpty').hidden = agents.length > 0;
+  $('agentList').innerHTML = agents.map((a) => {
+    const s = stats[nameKey(a.name)] || { parties: 0, confirmed: 0 };
+    const id = a.code
+      ? '<span>ID <b class="g-mob" data-code="' + esc(a.code) + '">' + '&bull;'.repeat(Math.min(a.code.length, 8)) + '</b></span>'
+      : '<span><b>No ID yet.</b> Add one so they can sign in.</span>';
+    return '<li class="row" data-name="' + esc(a.name) + '">' +
+      '<div class="row-main row-who">' + avatar(a.name) + '<div><p class="g-name">' + esc(a.name) + '<span class="g-party">' + plural(s.confirmed, 'confirmed guest', 'confirmed guests') + ' &middot; ' + plural(s.parties, 'RSVP', 'RSVPs') + '</span></p>' +
+      '<p class="g-sub">' + id + '</p></div></div>' +
+      '<div class="row-side"><span class="row-act">' +
+      (a.code ? '<button type="button" class="icon-btn" data-act="show" title="Show ID" aria-label="Show the ID of ' + esc(a.name) + '"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></button>' : '') +
+      '<button type="button" class="icon-btn" data-act="edit" title="Edit agent" aria-label="Edit ' + esc(a.name) + '"><svg aria-hidden="true"><use href="#i-edit"/></svg></button></span></div></li>';
+  }).join('');
+}
+
+$('agentList').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const row = b.closest('.row');
+  const a = S.mine.agents.find((x) => x.name === row.dataset.name);
+  if (!a) return;
+  if (b.dataset.act === 'edit') openAgent(a);
+  if (b.dataset.act === 'show') {
+    const code = row.querySelector('[data-code]');
+    const shown = code.textContent === a.code;
+    code.textContent = shown ? '•'.repeat(Math.min(a.code.length, 8)) : a.code;
+    b.title = shown ? 'Show ID' : 'Hide ID';
+  }
+});
+
+function genCode() {
+  const bad = /^(\d)\1{3}$|^(0123|1234|2345|3456|4567|5678|6789|9876|4321|1212|1122|2580|1004)$/;
+  const used = new Set((S.mine.agents || []).map((x) => String(x.code).toLowerCase()));
+  let code;
+  do {
+    const a = new Uint32Array(1);
+    window.crypto.getRandomValues(a);
+    code = String(a[0] % 10000).padStart(4, '0');
+  } while (bad.test(code) || used.has(code));
+  return code;
+}
+
+function openAgent(a) {
+  S.editingAgent = a ? a.name : null;
+  $('agentTitle').textContent = a ? 'Edit agent' : 'Add agent';
+  $('aName').value = a ? a.name : '';
+  $('aCode').value = a ? a.code : genCode();
+  $('agentDelete').hidden = !a;
+  $('agentDelConfirm').hidden = true;
+  $('aPhotoField').hidden = !a;
+  if (a) showPhotoPreview(a.name);
+  showErr('agentErr', '');
+  openSheet('sheet-agent');
+}
+
+function showPhotoPreview(name) {
+  $('aPhotoPreview').innerHTML = avatar(name);
+  $('aPhotoRemove').hidden = !S.photos[pkey(name)];
+}
+
+/** Square, head-weighted crop at 192px; WebP where the browser can make it, otherwise JPEG. */
+function photoToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const side = Math.min(img.naturalWidth, img.naturalHeight);
+      const sx = (img.naturalWidth - side) / 2;
+      const sy = (img.naturalHeight - side) * 0.3;   // portraits: keep the head, trim the chest
+      const c = document.createElement('canvas');
+      c.width = c.height = 192;
+      c.getContext('2d').drawImage(img, sx, sy, side, side, 0, 0, 192, 192);
+      let data = c.toDataURL('image/webp', 0.82);
+      if (data.indexOf('data:image/webp') !== 0) data = c.toDataURL('image/jpeg', 0.85);
+      resolve(data);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('That file is not a photo we can read. Try a JPG or PNG.')); };
+    img.src = url;
+  });
+}
+
+async function savePhoto(photo) {
+  const name = S.editingAgent;
+  if (!name) return;
+  try {
+    await write('savePhoto', { name, photo });
+    await loadPhotos();
+    showPhotoPreview(name);
+    toast(photo ? 'Photo saved for <b>' + esc(name) + '</b>.' : 'Photo removed.');
+  } catch (err) {
+    showErr('agentErr', err.message);
+  }
+}
+
+$('aPhotoFile').addEventListener('change', async () => {
+  const file = $('aPhotoFile').files[0];
+  $('aPhotoFile').value = '';
+  if (!file) return;
+  showErr('agentErr', '');
+  try {
+    await savePhoto(await photoToDataUrl(file));
+  } catch (err) {
+    showErr('agentErr', err.message);
+  }
+});
+$('aPhotoRemove').addEventListener('click', () => savePhoto(''));
+
+$('addAgentBtn').addEventListener('click', () => openAgent(null));
+$('agentsEmpty').addEventListener('click', (e) => { if (e.target.closest('[data-add-agent]')) openAgent(null); });
+$('aGen').addEventListener('click', () => { $('aCode').value = genCode(); });
+
+$('agentForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const agent = { original: S.editingAgent || '', name: $('aName').value.trim(), code: $('aCode').value.trim() };
+  if (agent.name.length < 2) { $('aName').focus(); return showErr('agentErr', 'Add the agent\'s name.'); }
+  if (agent.code.replace(/\s/g, '').length < 3) { $('aCode').focus(); return showErr('agentErr', 'The ID needs at least 3 characters, e.g. 4821 or DP07.'); }
+  busy($('agentSave'), true);
+  try {
+    const wasNew = !agent.original;
+    await write('saveAgent', { agent });
+    closeSheet('sheet-agent');
+    toast((wasNew ? 'Added' : 'Saved') + ' <b>' + esc(agent.name) + '</b>. Send them the app link and their ID.', 7000);
+  } catch (err) {
+    showErr('agentErr', err.message);
+  } finally {
+    busy($('agentSave'), false);
+  }
+});
+
+$('agentDelete').addEventListener('click', () => { $('agentDelete').hidden = true; $('agentDelConfirm').hidden = false; });
+$('agentDelNo').addEventListener('click', () => { $('agentDelete').hidden = false; $('agentDelConfirm').hidden = true; });
+$('agentDelYes').addEventListener('click', async () => {
+  const name = S.editingAgent;
+  busy($('agentDelYes'), true, 'Removing');
+  try {
+    await write('deleteAgent', { name });
+    closeSheet('sheet-agent');
+    toast('Removed <b>' + esc(name) + '</b>. Their guests stay on the list.', 6000);
+  } catch (err) {
+    showErr('agentErr', err.message);
+  } finally {
+    busy($('agentDelYes'), false);
+  }
+});
+
+/* ---------- CEO: event ---------- */
+
+function fillEvent(force) {
+  const m = S.mine;
+  if (!m || !m.settings || (!force && S.eventDirty)) return;
+  const s = m.settings;
+  $('eName').value = s.name;
+  $('eTagline').value = s.tagline || '';
+  $('eDaily').checked = !!s.daily;
+  $('eDate').value = s.date || '';
+  $('eStart').value = s.start;
+  $('eEnd').value = s.end;
+  $('eVenue').value = s.venue || '';
+  document.querySelectorAll('input[name=eOpen]').forEach((i) => { i.checked = i.value === (s.open ? 'yes' : 'no'); });
+  $('ePin').value = '';
+  const base = PAGE_URL || m.appUrl;
+  $('appLink').value = base || 'Deploy the web app to get its link';
+  $('ceoLink').value = base ? base + '?ceo' : 'Deploy the web app to get its link';
+  $('boardLink').value = base && m.boardKey ? base + '?board=' + m.boardKey : 'Deploy the web app to get its link';
+  $('newBoardKey').hidden = false;
+  $('boardKeyConfirm').hidden = true;
+  $('sheetLink').href = m.sheetUrl || '#';
+  showErr('eventErr', '');
+  S.eventDirty = false;
+}
+
+$('eventForm').addEventListener('input', () => { S.eventDirty = true; $('eventSaved').textContent = ''; });
+$('eventForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const open = document.querySelector('input[name=eOpen]:checked');
+  const event = {
+    name: $('eName').value.trim(), tagline: $('eTagline').value.trim(),
+    daily: $('eDaily').checked, date: $('eDate').value,
+    start: $('eStart').value, end: $('eEnd').value, venue: $('eVenue').value.trim(),
+    open: !open || open.value === 'yes', adminPin: $('ePin').value.trim()
+  };
+  if (!event.name) { $('eName').focus(); return showErr('eventErr', 'Add the event name.'); }
+  if (!event.start || !event.end) return showErr('eventErr', 'Add the opening and closing time.');
+  if (event.adminPin && !/^\d{6,8}$/.test(event.adminPin)) return showErr('eventErr', 'The new CEO PIN must be 6 to 8 digits.');
+  showErr('eventErr', '');
+  busy($('eventSave'), true);
+  try {
+    S.eventDirty = false;
+    await write('saveEvent', { event });
+    fillEvent(true);
+    $('eventSaved').textContent = 'Saved.' + (event.adminPin ? ' CEO PIN changed.' : '');
+  } catch (err) {
+    S.eventDirty = true;
+    showErr('eventErr', err.message);
+  } finally {
+    busy($('eventSave'), false);
+  }
+});
+
+document.querySelectorAll('[data-copy]').forEach((btn) => btn.addEventListener('click', () => {
+  const input = $(btn.dataset.copy);
+  const done = () => toast({ boardLink: 'Dashboard link copied.', ceoLink: 'CEO link copied. Keep it for yourself.' }[btn.dataset.copy] ||
+    'Agent link copied. Paste it in the agents\' WhatsApp group.');
+  try {
+    navigator.clipboard.writeText(input.value).then(done, () => { input.select(); document.execCommand('copy'); done(); });
+  } catch (e) {
+    input.select();
+    try { document.execCommand('copy'); done(); } catch (e2) { toast('Select the link and copy it.'); }
+  }
+}));
+
+$('newBoardKey').addEventListener('click', () => { $('newBoardKey').hidden = true; $('boardKeyConfirm').hidden = false; });
+$('boardKeyNo').addEventListener('click', () => { $('newBoardKey').hidden = false; $('boardKeyConfirm').hidden = true; });
+$('boardKeyYes').addEventListener('click', async () => {
+  const s = S.mine.settings;
+  busy($('boardKeyYes'), true, 'Making');
+  try {
+    await write('saveEvent', { event: { name: s.name, tagline: s.tagline, daily: s.daily, date: s.date, start: s.start, end: s.end, venue: s.venue, open: s.open, newBoardKey: true } });
+    fillEvent(true);
+    toast('New dashboard link made. The old one no longer works.', 6000);
+  } catch (err) {
+    toast(esc(err.message), 6000);
+  } finally {
+    busy($('boardKeyYes'), false);
+  }
+});
+
+/* ---------- start ---------- */
+
+$('tvBtn').addEventListener('click', () => setTv(true));
+document.querySelector('.brand').addEventListener('click', () => { if (document.body.classList.contains('tv')) setTv(false); });
+
+(function boot() {
+  S.auth = store.get(AUTH_KEY);
+  let wantTv = false;
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    sync().then(() => {
+      setView(homeView());
+      if (wantTv && canSeeBoard()) setTv(true);
+      if (S.ceoLink && !(S.mine && S.mine.who)) openSignIn(true);   // the CEO link asks for the PIN straight away
+    });
+  };
+  const useParams = (p) => {
+    wantTv = p.tv === '1' || p.view === 'tv';
+    S.boardKey = String(p.board || '').trim();
+    S.ceoLink = p.ceo !== undefined;
+    applyAuthUi();
+    start();
+  };
+  try {
+    if (window.google && google.script && google.script.url) {
+      google.script.url.getLocation((loc) => useParams((loc && loc.parameter) || {}));
+      setTimeout(start, 1500);
+    } else {
+      const p = {};
+      new URLSearchParams(location.search).forEach((v, k) => { p[k] = v; });
+      useParams(p);
+    }
+  } catch (e) { start(); }
+  setInterval(tick, 1000);
+})();
+
+})();</script>
+</body>
+</html>

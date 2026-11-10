@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DEEN Open House RSVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>/*STYLES*/</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!--LOGO_SYMBOL-->
+    <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="1"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5l1.3-3.9A8 8 0 1 1 8.6 19z"/><path d="M9 9.5c.3 2 2.2 4.1 4.6 4.8l1-1.1 1.7.8-.4 1.4c-3.7.2-7.6-3.5-7.4-7.1l1.4-.4.8 1.7z" stroke-width="1.2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4.5" width="18" height="12" rx="1"/><path d="M8 20h8"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3.5" width="16" height="17" rx="1"/><path d="M4 9h16M4 14.5h16M10 9v11.5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <svg class="logo" viewBox="0 -2 1016 458" role="img" aria-label="DEEN Properties"><use href="#deen-logo"/></svg>
+      <span class="brand-tag">Open House RSVP</span>
+    </div>
+    <div class="top-right">
+      <span class="live off" id="live" aria-live="polite"><i></i><span id="liveText">Connecting</span></span>
+      <button class="btn-ghost" id="signInBtn" type="button">Sign in</button>
+      <div class="me" id="me" hidden>
+        <span class="me-name" id="meName"></span>
+        <button class="btn-ghost" id="signOutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </div>
+  <nav class="wrap tabs" id="tabs" aria-label="Views" hidden>
+    <button type="button" data-view="board" class="on">Dashboard</button>
+    <button type="button" data-view="mine" id="tabMine">All guests</button>
+    <button type="button" data-view="agents" data-admin>Agents</button>
+    <button type="button" data-view="event" data-admin>Event</button>
+  </nav>
+</header>
+
+<main>
+  <!-- LIVE BOARD -->
+  <section class="stage" id="view-board" aria-label="Live board">
+    <canvas class="sand" id="sand" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="boot" id="boot">
+        <svg class="logo" viewBox="0 -2 1016 458" aria-hidden="true"><use href="#deen-logo"/></svg>
+        <p id="bootText">Loading</p>
+      </div>
+      <div class="event" id="eventBlock" hidden>
+        <div class="event-main">
+          <p class="eyebrow">Open house</p>
+          <h1 id="evName">DEEN Open House</h1>
+          <p class="ev-tag" id="evTag" hidden></p>
+          <ul class="ev-meta">
+            <li><svg aria-hidden="true"><use href="#i-cal"/></svg><span id="evDate"></span></li>
+            <li><svg aria-hidden="true"><use href="#i-clock"/></svg><span id="evTime"></span></li>
+            <li><svg aria-hidden="true"><use href="#i-pin"/></svg><span id="evVenue"></span></li>
+          </ul>
+        </div>
+        <div class="cd" id="countdown" role="timer" hidden>
+          <p class="cd-label"><i class="cd-dot"></i><span id="cdLabel">Opens in</span></p>
+          <div class="cd-row" id="cdRow">
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdD">00</span></span><span class="cd-cap">Days</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdH">00</span></span><span class="cd-cap">Hours</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdM">00</span></span><span class="cd-cap">Minutes</span></div>
+            <span class="cd-sep" aria-hidden="true">:</span>
+            <div class="cd-unit"><span class="cd-num"><span class="cd-ghost" aria-hidden="true">88</span><span class="cd-val" id="cdS">00</span></span><span class="cd-cap">Seconds</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="welcome" id="welcome" hidden>
+        <p id="welcomeText">Agents: sign in with your name and the ID the CEO gave you, then add every guest you invite.</p>
+        <button class="btn btn-light" type="button" id="welcomeSignIn">Sign in</button>
+      </div>
+      <div id="boardBody" hidden>
+        <div class="hero">
+          <div class="hero-num">
+            <span class="big" id="kConfirmed">0</span>
+            <span class="hero-label">Confirmed guests</span>
+            <span class="hero-cap" id="capText"></span>
+          </div>
+          <section class="today" aria-labelledby="todayTitle">
+            <p class="today-title" id="todayTitle">Today</p>
+            <dl class="today-stats">
+              <div><dt>New RSVPs</dt><dd id="kTodayNew">0</dd></div>
+              <div><dt>Confirmed guests</dt><dd id="kTodayConfirmed">0</dd></div>
+              <div><dt>Arrived</dt><dd id="kTodayArrived">0</dd></div>
+            </dl>
+          </section>
+        </div>
+
+        <dl class="stats">
+          <div><dt>RSVPs</dt><dd id="kParties">0</dd><small id="kPartiesNote">guest parties</small></div>
+          <div><dt>Maybe</dt><dd id="kMaybe">0</dd><small>people</small></div>
+          <div><dt>Awaiting reply</dt><dd id="kAwaiting">0</dd><small>RSVPs</small></div>
+          <div><dt>Declined</dt><dd id="kDeclined">0</dd><small>RSVPs</small></div>
+          <div><dt>Arrived</dt><dd id="kArrived">0</dd><small id="kArrivedNote">people checked in</small></div>
+        </dl>
+
+        <section class="arrival-chart" id="arrivalChart" hidden aria-label="Expected arrival">
+          <h2>Expected arrival <small>confirmed guests by time</small></h2>
+          <ul class="arrival-list" id="arrivalList"></ul>
+        </section>
+
+        <div class="board-grid">
+          <section class="rank" aria-labelledby="hLeader">
+            <div class="rank-head">
+              <h2 id="hLeader">Agent ranking <small>by confirmed guests, then RSVPs</small></h2>
+              <p class="tier-key"><span class="tk tk-elite">Elite · top 25%</span><span class="tk tk-core">Core · middle 50%</span><span class="tk tk-growth">Growth · bottom 25%</span></p>
+            </div>
+            <div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
+            <div class="podium" id="podium"></div>
+            <ol class="ranks" id="ranks"></ol>
+          </section>
+          <section aria-labelledby="hFeed">
+            <h2 id="hFeed">Latest <small>newest first</small></h2>
+            <ul class="feed" id="feed"></ul>
+          </section>
+        </div>
+
+        <footer class="stage-foot">
+          <span id="updated">Connecting</span>
+          <span class="grow"></span>
+          <button class="btn-ghost tv-hide" type="button" id="tvBtn"><svg aria-hidden="true"><use href="#i-tv"/></svg><span>TV mode</span></button>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- MY RSVPs / ALL GUESTS -->
+  <section class="paper" id="view-mine" aria-label="RSVPs" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow mine-eyebrow"><span id="mineAvatar"></span><span id="mineEyebrow"></span></p>
+          <h2 id="mineTitle">My RSVPs</h2>
+          <p class="event-line" id="mineEvent"></p>
+        </div>
+        <button class="btn" type="button" id="addBtn"><svg aria-hidden="true"><use href="#i-plus"/></svg>Add RSVP</button>
+      </div>
+      <p class="closed-note" id="closedNote" hidden>RSVPs are closed by the manager. You can still check guests in when they arrive.</p>
+      <dl class="mystats" id="myStats"></dl>
+      <div class="filters">
+        <div class="chips" id="chips" role="group" aria-label="Filter by status"></div>
+        <select class="inline" id="eventFilter" aria-label="Filter by event" hidden></select>
+        <select class="inline" id="agentFilter" aria-label="Filter by agent" hidden></select>
+        <label class="search"><svg aria-hidden="true"><use href="#i-search"/></svg><input type="search" id="search" placeholder="Search name, number or note" aria-label="Search guests"></label>
+      </div>
+      <ul class="list" id="list"></ul>
+      <div class="empty" id="listEmpty" hidden></div>
+    </div>
+  </section>
+
+  <!-- MANAGER: AGENTS -->
+  <section class="paper" id="view-agents" aria-label="Agents" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow">CEO</p>
+          <h2>Agents</h2>
+        </div>
+        <button class="btn" type="button" id="addAgentBtn"><svg aria-hidden="true"><use href="#i-plus"/></svg>Add agent</button>
+      </div>
+      <p class="lede">Only agents on this list can sign in. They tap their name and type their ID, then see and edit only their own guests. You can also type names and IDs straight into the Agents tab of the Google Sheet.</p>
+      <ul class="list" id="agentList"></ul>
+      <div class="empty" id="agentsEmpty" hidden>
+        <h3>No agents yet</h3>
+        <p>Add each agent's name and an ID, then send them the app link and their ID on WhatsApp.</p>
+        <button class="btn" type="button" data-add-agent><svg aria-hidden="true"><use href="#i-plus"/></svg>Add the first agent</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANAGER: EVENT -->
+  <section class="paper" id="view-event" aria-label="Event settings" hidden>
+    <div class="wrap">
+      <div class="paper-head">
+        <div>
+          <p class="eyebrow">CEO</p>
+          <h2>Event</h2>
+        </div>
+      </div>
+      <form id="eventForm" novalidate>
+        <div class="form-grid">
+          <label class="field span"><span>Event name</span><input type="text" id="eName" maxlength="60" required></label>
+          <label class="field span"><span>Line under the title</span><input type="text" id="eTagline" maxlength="80" placeholder="e.g. Exclusive preview of our new launch"><small>Optional. Shown on the live board.</small></label>
+          <div class="field span">
+            <span class="field-label">Date</span>
+            <label class="check"><input type="checkbox" id="eDaily">Open every day: the date changes by itself each day</label>
+            <input type="date" id="eDate" aria-label="Event date or first day">
+            <small>Every day ticked: this is the first day (leave empty to start today). Not ticked: the one event date.</small>
+          </div>
+          <label class="field"><span>Opens</span><input type="time" id="eStart" step="900"></label>
+          <label class="field"><span>Closes</span><input type="time" id="eEnd" step="900"></label>
+          <label class="field span"><span>Venue</span><input type="text" id="eVenue" maxlength="120" placeholder="e.g. Show apartment, Tower B, Business Bay"></label>
+          <div class="field">
+            <span class="field-label">RSVPs</span>
+            <div class="seg two" role="radiogroup" aria-label="RSVPs open or closed">
+              <label><input type="radio" name="eOpen" value="yes"><span>Open</span></label>
+              <label><input type="radio" name="eOpen" value="no"><span>Closed</span></label>
+            </div>
+            <small>Closed stops agents adding or editing. Check-in still works.</small>
+          </div>
+          <label class="field"><span>New CEO PIN</span><input type="password" id="ePin" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="Leave empty to keep"><small>6 to 8 digits</small></label>
+        </div>
+        <p class="form-err" id="eventErr" role="alert" hidden></p>
+        <div class="actions-row">
+          <button class="btn" type="submit" id="eventSave">Save event</button>
+          <span class="saved-note" id="eventSaved"></span>
+        </div>
+      </form>
+
+      <div class="panel">
+        <h3>Agent link</h3>
+        <p>Send it to the agents' WhatsApp group. Agents sign in with their name and ID and get two tabs: the Dashboard and My RSVPs, where they add and see only their own guests.</p>
+        <div class="copy-row">
+          <input type="text" id="appLink" readonly aria-label="Agent link">
+          <button class="btn sm" type="button" data-copy="appLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>CEO link</h3>
+        <p>For the CEO only. It opens straight to the CEO PIN and then shows all four tabs: Dashboard, All guests, Agents and Event.</p>
+        <div class="copy-row">
+          <input type="text" id="ceoLink" readonly aria-label="CEO link">
+          <button class="btn sm" type="button" data-copy="ceoLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Dashboard link</h3>
+        <p>The live dashboard without the CEO PIN: confirmed guests, today's numbers, agent leaderboard and latest activity. It never shows phone numbers or full guest names. Use it for the office TV or to share with management. Add <b>&amp;tv=1</b> at the end to open straight in TV mode.</p>
+        <div class="copy-row">
+          <input type="text" id="boardLink" readonly aria-label="Dashboard link">
+          <button class="btn sm" type="button" data-copy="boardLink"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+        </div>
+        <div class="actions-row">
+          <button type="button" class="link danger" id="newBoardKey">Make a new dashboard link</button>
+          <div class="confirm-del" id="boardKeyConfirm" hidden><span>The old dashboard link will stop working.</span><button type="button" class="btn sm" id="boardKeyYes">Make new link</button><button type="button" class="link" id="boardKeyNo">Cancel</button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Google Sheet</h3>
+        <p>Every RSVP, agent and change is stored in the Google Sheet. Open it to filter, print or download the full guest list.</p>
+        <a class="btn" id="sheetLink" href="#" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-sheet"/></svg>Open the Google Sheet</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- SIGN IN -->
+<div class="sheet" id="sheet-signin" role="dialog" aria-modal="true" aria-labelledby="signinTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="signinForm" novalidate>
+    <header class="sheet-head"><h3 id="signinTitle">Sign in</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <p class="hint" id="signinHint">Pick your name, then type the ID the CEO gave you.</p>
+      <div class="names" id="nameList" role="radiogroup" aria-label="Your name"></div>
+      <label class="field" id="pinField" hidden><span id="pinLabel">Your ID</span><input class="pin-input" type="password" id="fPin" inputmode="text" maxlength="30" autocomplete="current-password" autocapitalize="off" spellcheck="false"></label>
+      <label class="check"><input type="checkbox" id="fKeep" checked>Keep me signed in on this phone</label>
+      <p class="form-err" id="signinErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot"><span class="grow"></span><button type="button" class="link" data-close>Cancel</button><button class="btn" type="submit" id="signinGo" disabled>Sign in</button></footer>
+  </form>
+</div>
+
+<!-- ADD / EDIT RSVP -->
+<div class="sheet" id="sheet-rsvp" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="rsvpForm" novalidate>
+    <header class="sheet-head"><h3 id="rsvpTitle">Add RSVP</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <label class="field" id="agentField" hidden><span>Agent</span><select id="fAgent"></select></label>
+      <label class="field"><span>Guest name</span><input type="text" id="fName" maxlength="80" autocomplete="off" required></label>
+      <label class="field"><span>Mobile</span><input type="tel" id="fMobile" inputmode="tel" autocomplete="off" placeholder="050 123 4567 or +44 7700 900123" required></label>
+      <div class="field-row">
+        <div class="field">
+          <span class="field-label">People coming</span>
+          <div class="stepper"><button type="button" id="pMinus" aria-label="One less">&minus;</button><output id="fParty">1</output><button type="button" id="pPlus" aria-label="One more">+</button></div>
+          <small>Including the guest</small>
+        </div>
+        <label class="field"><span>Expected arrival</span><select id="fArrival"></select></label>
+      </div>
+      <div class="field">
+        <span class="field-label">Status</span>
+        <div class="seg" role="radiogroup" aria-label="Status" id="fStatus">
+          <label><input type="radio" name="status" value="Confirmed" checked><span>Confirmed</span></label>
+          <label><input type="radio" name="status" value="Maybe"><span>Maybe</span></label>
+          <label><input type="radio" name="status" value="Awaiting"><span>Awaiting</span></label>
+          <label><input type="radio" name="status" value="Declined"><span>Declined</span></label>
+        </div>
+      </div>
+      <details class="more" id="moreBox">
+        <summary>More details <small>optional</small></summary>
+        <div class="field-row">
+          <label class="field"><span>Interested in</span><select id="fInterest"></select></label>
+          <label class="field"><span>Budget</span><select id="fBudget"></select></label>
+        </div>
+        <label class="field"><span>Notes</span><textarea id="fNotes" maxlength="500" rows="3" placeholder="e.g. Coming with his broker, wants sea view"></textarea></label>
+      </details>
+      <p class="form-err" id="rsvpErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot">
+      <button type="button" class="link danger" id="rsvpDelete" hidden>Remove RSVP</button>
+      <div class="confirm-del" id="delConfirm" hidden><span>Remove this guest?</span><button type="button" class="btn sm" id="delYes">Remove</button><button type="button" class="link" id="delNo">Keep</button></div>
+      <span class="grow"></span>
+      <button type="button" class="link" data-close>Cancel</button>
+      <button class="btn" type="submit" id="rsvpSave">Save RSVP</button>
+    </footer>
+  </form>
+</div>
+
+<!-- ADD / EDIT AGENT -->
+<div class="sheet" id="sheet-agent" role="dialog" aria-modal="true" aria-labelledby="agentTitle" hidden>
+  <div class="sheet-back" data-close></div>
+  <form class="sheet-card" id="agentForm" novalidate>
+    <header class="sheet-head"><h3 id="agentTitle">Add agent</h3><button type="button" class="x" data-close aria-label="Close">&times;</button></header>
+    <div class="sheet-body">
+      <label class="field"><span>Name</span><input type="text" id="aName" maxlength="40" autocomplete="off" required></label>
+      <div class="field">
+        <span class="field-label">ID</span>
+        <div class="copy-row"><input type="text" id="aCode" maxlength="30" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="ID"><button class="btn sm" type="button" id="aGen">Make one</button></div>
+        <small>At least 3 characters, e.g. their employee number or 4821. The agent signs in by tapping their name and typing this ID.</small>
+      </div>
+      <div class="field" id="aPhotoField" hidden>
+        <span class="field-label">Photo</span>
+        <div class="photo-row">
+          <span id="aPhotoPreview"></span>
+          <label class="btn sm" for="aPhotoFile">Upload photo</label>
+          <input type="file" id="aPhotoFile" accept="image/*" hidden>
+          <button type="button" class="link danger" id="aPhotoRemove" hidden>Remove photo</button>
+        </div>
+        <small>Shown round on the dashboard ranking. A head-and-shoulders photo works best. Saved straight away.</small>
+      </div>
+      <p class="form-err" id="agentErr" role="alert" hidden></p>
+    </div>
+    <footer class="sheet-foot">
+      <button type="button" class="link danger" id="agentDelete" hidden>Remove agent</button>
+      <div class="confirm-del" id="agentDelConfirm" hidden><span>Remove this agent? Their guests stay.</span><button type="button" class="btn sm" id="agentDelYes">Remove</button><button type="button" class="link" id="agentDelNo">Keep</button></div>
+      <span class="grow"></span>
+      <button type="button" class="link" data-close>Cancel</button>
+      <button class="btn" type="submit" id="agentSave">Save agent</button>
+    </footer>
+  </form>
+</div>
+
+<div class="celebrate" id="celebrate" aria-live="polite" hidden>
+  <div class="celebrate-card">
+    <div class="celebrate-av" id="celebrateAv"></div>
+    <p class="celebrate-kicker">New leader</p>
+    <p class="celebrate-name" id="celebrateName"></p>
+    <p class="celebrate-sub" id="celebrateSub"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>/*APP*/</script>
+</body>
+</html>
