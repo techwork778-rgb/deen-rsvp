@@ -8,7 +8,7 @@
 //   node dev/crm-bridge.mjs
 import http from 'node:http';
 import { createHash } from 'node:crypto';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, realpathSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -288,19 +288,50 @@ function readBody(req) {
   });
 }
 
-export function start(port = Number(process.env.PORT || 8794)) {
+function listenPort(port) {
+  if (port !== undefined) return port;
+  const raw = process.env.PORT;
+  if (raw === undefined || String(raw).trim() === '') return 8794;
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < 0 || parsed > 65535) {
+    throw new Error('PORT must be an integer from 0 to 65535.');
+  }
+  return parsed;
+}
+
+function sameFile(moduleUrl, filePath) {
+  if (!filePath) return false;
+  try {
+    return moduleUrl === pathToFileURL(realpathSync(filePath)).href;
+  } catch {
+    return false;
+  }
+}
+
+// `node dev/crm-bridge.mjs` sets argv[1] to this file.
+// PM2 fork mode does not: it runs ProcessContainerFork.js and import()s this
+// file, leaving the real script path in pm_exec_path. The argv check alone
+// skips listen(), the process exits, and PM2 ends up stopped with nothing on 8794.
+export function shouldStartServer(moduleUrl = import.meta.url, env = process.env, argv = process.argv) {
+  if (sameFile(moduleUrl, env.pm_exec_path)) return true;
+  return argv.slice(1).some((arg) => sameFile(moduleUrl, arg));
+}
+
+export function start(port) {
+  port = listenPort(port);
   const pagePath = join(root, 'dev', 'site-local.html');
   const server = http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url || '/', 'http://127.0.0.1');
-      if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
+      const isPage = url.pathname === '/' || url.pathname === '/index.html';
+      if ((req.method === 'GET' || req.method === 'HEAD') && isPage) {
         if (!existsSync(pagePath)) {
           res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-          res.end('Run node build.mjs so dev/site-local.html exists.');
+          res.end(req.method === 'HEAD' ? '' : 'Run node build.mjs so dev/site-local.html exists.');
           return;
         }
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
-        res.end(readFileSync(pagePath));
+        res.end(req.method === 'HEAD' ? '' : readFileSync(pagePath));
         return;
       }
       if (req.method === 'POST' && url.pathname === '/__exec') {
@@ -318,15 +349,36 @@ export function start(port = Number(process.env.PORT || 8794)) {
       res.end(JSON.stringify({ ok: false, error: message }));
     }
   });
-  return new Promise((resolve) => {
-    server.listen(port, '127.0.0.1', () => resolve(server));
+  return new Promise((resolve, reject) => {
+    const onError = (err) => reject(err);
+    server.once('error', onError);
+    server.listen(port, '127.0.0.1', () => {
+      server.off('error', onError);
+      resolve(server);
+    });
   });
 }
 
-const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
-if (isMain) {
-  const server = await start();
+if (shouldStartServer()) {
+  const major = Number(process.versions.node.split('.')[0]);
+  if (major < 18) {
+    console.error('RSVP dashboard bridge requires Node.js 18 or newer. This process is ' + process.version + '.');
+    process.exit(1);
+  }
+  let server;
+  try {
+    server = await start();
+  } catch (err) {
+    console.error('RSVP dashboard bridge failed to listen on 127.0.0.1:' + (process.env.PORT || 8794));
+    console.error(err && err.message ? err.message : err);
+    process.exit(1);
+  }
   const address = server.address();
   console.log('RSVP dashboard bridge  http://127.0.0.1:' + address.port);
+  console.log('Node                   ' + process.version);
   console.log('CRM                    ' + (process.env.CRM_API_BASE_URL || '(CRM_API_BASE_URL is not set)'));
+} else if (process.env.pm_id !== undefined) {
+  console.error('RSVP dashboard bridge was loaded by PM2 but did not recognize its script path.');
+  console.error('pm_exec_path=' + (process.env.pm_exec_path || ''));
+  process.exit(1);
 }

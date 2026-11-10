@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { handleAction, start } from './crm-bridge.mjs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { handleAction, shouldStartServer, start } from './crm-bridge.mjs';
 
 const KEY = 'dashboard-test-key-32chars';
 
@@ -105,6 +106,7 @@ test('bridge maps CRM pages into the dashboard payload', async () => {
 
   const bridge = await start(0);
   const port = bridge.address().port;
+  assert.equal(bridge.address().address, '127.0.0.1');
   const viaHttp = await fetch('http://127.0.0.1:' + port + '/__exec', {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -116,4 +118,14 @@ test('bridge maps CRM pages into the dashboard payload', async () => {
 
   bridge.close();
   crm.close();
+});
+
+test('bridge starts under PM2 fork mode and not when imported by the tests', () => {
+  const bridge = fileURLToPath(new URL('./crm-bridge.mjs', import.meta.url));
+  const bridgeUrl = pathToFileURL(bridge).href;
+  const container = '/usr/lib/node_modules/pm2/lib/ProcessContainerFork.js';
+  assert.equal(shouldStartServer(bridgeUrl, { pm_exec_path: bridge }, ['node', container]), true);
+  assert.equal(shouldStartServer(bridgeUrl, {}, ['node', bridge]), true);
+  assert.equal(shouldStartServer(bridgeUrl, {}, ['node', fileURLToPath(import.meta.url)]), false);
+  assert.equal(shouldStartServer(bridgeUrl, { pm_exec_path: container }, ['node', container]), false);
 });
